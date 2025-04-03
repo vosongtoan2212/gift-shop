@@ -3,9 +3,9 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 const corsOptions = {
-  origin: '*', // Cho phép tất cả các nguồn truy cập
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Cho phép các phương thức HTTP
-  allowedHeaders: ['Content-Type', 'Authorization'], // Cho phép các header HTTP
+  origin: '*',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 async function bootstrap() {
@@ -18,6 +18,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true, // Trả về lỗi nếu có field không mong muốn
     }),
   );
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
