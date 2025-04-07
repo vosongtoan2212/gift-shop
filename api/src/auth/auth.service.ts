@@ -16,18 +16,23 @@ export class AuthService {
   ) {}
 
   async login({ email, password }: LoginDTO) {
-    // Xác thực thông tin đăng nhập
     const user = await this.validateUser(email, password);
     if (!user) {
       throw new UnauthorizedException();
     }
 
-    // Tạo token JWT
     const payload = { email: user.email, sub: user.id };
-    const accessToken = await this.jwtService.sign(payload);
+    const accessToken = await this.jwtService.sign(payload, {
+      expiresIn: '15m',
+    });
+    const refreshToken = await this.jwtService.sign(payload, {
+      expiresIn: '7d',
+    });
 
-    // Trả về token cho người dùng
-    return { accessToken };
+    // Lưu refreshToken vào DB để quản lý
+    await this.userService.updateRefreshToken(user.id, refreshToken);
+
+    return { accessToken, refreshToken };
   }
 
   async register(registerDto: RegisterDTO) {
@@ -47,26 +52,63 @@ export class AuthService {
     if (!user || !bcrypt.compareSync(password, user.password)) {
       return null;
     }
-
     return user;
   }
 
-  // Hàm kiểm tra token có hợp lệ không
-  async validateToken(tokenHeader: string): Promise<boolean> {
+  async validateToken(tokenHeader: string): Promise<any> {
     let token = '';
     const parts = tokenHeader.split(' ');
     if (parts.length === 2 && parts[0] === 'Bearer') {
-      token = parts[1]; // Phần thứ hai là token
+      token = parts[1];
     }
     try {
-      // Kiểm tra token với JwtService
       const decoded = this.jwtService.verify(token);
-
-      // Token hợp lệ nếu không ném ra lỗi
       return decoded;
     } catch (error) {
-      // Nếu token không hợp lệ hoặc hết hạn, ném lỗi Unauthorized
-      throw new UnauthorizedException('Invalid or expired token');
+      throw new UnauthorizedException('Invalid or expired token', error);
     }
+  }
+
+  async refreshToken(refreshTokenHeader: string) {
+    let token = '';
+    console.log(refreshTokenHeader);
+    const parts = refreshTokenHeader.split(' ');
+    if (parts.length === 2 && parts[0] === 'Bearer') {
+      token = parts[1];
+    }
+    try {
+      const decoded = this.jwtService.verify(token);
+
+      const user = await this.userService.findOneById(decoded.sub);
+      if (!user) {
+        throw new UnauthorizedException();
+      }
+
+      // Kiểm tra refreshToken có khớp không
+      if (user.refreshToken !== token) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
+
+      const payload = { email: user.email, sub: user.id };
+      const newAccessToken = await this.jwtService.sign(payload, {
+        expiresIn: '15m',
+      });
+
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      throw new UnauthorizedException(
+        'Invalid or expired refresh token',
+        error,
+      );
+    }
+  }
+
+  async logout(tokenHeader: string) {
+    const decoded = await this.validateToken(tokenHeader);
+
+    // Xoá refreshToken trong DB (hoặc Redis)
+    await this.userService.removeRefreshToken(decoded.sub);
+
+    return { message: 'Logout successfully' };
   }
 }

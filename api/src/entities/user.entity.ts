@@ -45,6 +45,9 @@ export class UserEntity {
   @Column({ name: 'last_login_date', type: 'timestamp', nullable: true })
   lastLoginDate?: Date;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @Column({ name: 'profile_picture_url', nullable: true })
   profilePictureURL?: string;
 

@@ -15,7 +15,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Loại bỏ các field không mong muốn
-      forbidNonWhitelisted: true, // Trả về lỗi nếu có field không mong muốn
+      // forbidNonWhitelisted: true, // Trả về lỗi nếu có field không mong muốn
     }),
   );
   await app.listen(3001);

@@ -21,10 +21,24 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
-  @ApiOperation({ summary: 'Register' })
-  @ApiOkResponse({ description: 'User registered successfully' })
+  @ApiOperation({ summary: 'Check' })
+  @ApiOkResponse({ description: 'Check token' })
   @Post('check')
   async check(@Headers('Authorization') tokenHeader: string) {
     return this.authService.validateToken(tokenHeader);
+  }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh token' })
+  @ApiOkResponse({ description: 'New access token' })
+  async refreshToken(@Headers('Authorization') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
+  }
+
+  @Post('logout')
+  @ApiOperation({ summary: 'Logout' })
+  @ApiOkResponse({ description: 'Logout successfully' })
+  async logout(@Headers('Authorization') tokenHeader: string) {
+    return this.authService.logout(tokenHeader);
   }
 }
