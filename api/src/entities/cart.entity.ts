@@ -7,10 +7,10 @@ export class CartEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => UserEntity)
+  @ManyToOne(() => UserEntity, (user) => user.carts) // Một người dùng có thể có nhiều giỏ hàng
   user: UserEntity;
 
-  @ManyToOne(() => ProductEntity)
+  @ManyToOne(() => ProductEntity, (product) => product.carts) // Một sản phẩm có thể xuất hiện trong nhiều giỏ hàng
   product: ProductEntity;
 
   @Column()

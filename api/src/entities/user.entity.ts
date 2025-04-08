@@ -7,6 +7,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import { CartEntity } from '~/entities/cart.entity';
 import { OrderEntity } from '~/entities/order.entity';
 import { ReviewEntity } from '~/entities/review.entity';
 
@@ -56,4 +57,7 @@ export class UserEntity {
 
   @OneToMany(() => ReviewEntity, (review) => review.user)
   reviews: ReviewEntity[];
+
+  @OneToMany(() => CartEntity, (cart) => cart.user)
+  carts: CartEntity[];
 }

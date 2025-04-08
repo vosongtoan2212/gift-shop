@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import slugify from 'slugify';
 import { Repository } from 'typeorm';
 import { ProductEntity } from '~/entities/product.entity';
 import { CreateProductDTO } from '~/product/dto/create-product.dto';
@@ -13,18 +14,45 @@ export class ProductService {
   ) {}
 
   async create(createProductDto: CreateProductDTO): Promise<ProductEntity> {
-    const product = this.productRepository.create(createProductDto);
+    const baseSlug = slugify(createProductDto.name, {
+      lower: true,
+      strict: true,
+    });
+    let slug = baseSlug;
+    let count = 1;
+
+    while (await this.productRepository.findOne({ where: { slug } })) {
+      slug = `${baseSlug}-${count}`;
+      count++;
+    }
+
+    const product = this.productRepository.create({
+      ...createProductDto,
+      slug,
+    });
+
     return this.productRepository.save(product);
   }
 
   async findAll(): Promise<ProductEntity[]> {
-    return this.productRepository.find({ relations: ['category', 'Product'] });
+    return this.productRepository.find({ relations: ['category', 'brand'] });
   }
 
   async findOne(id: number): Promise<ProductEntity> {
     const product = await this.productRepository.findOne({
       where: { id },
-      relations: ['category', 'Product'],
+      relations: ['category', 'brand'],
+    });
+    if (!product) {
+      throw new NotFoundException('Product not found');
+    }
+    return product;
+  }
+
+  async findBySlug(slug: string): Promise<ProductEntity> {
+    const product = await this.productRepository.findOne({
+      where: { slug },
+      relations: ['category', 'brand'],
     });
     if (!product) {
       throw new NotFoundException('Product not found');
