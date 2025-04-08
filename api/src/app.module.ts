@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from '~/user/user.module';
 import { JwtStrategy } from '~/auth/jwt.strategy';
+import { ProductModule } from './product/product.module';
+import { CategoryModule } from './category/category.module';
+import { BrandModule } from './brand/brand.module';
 
 @Module({
   imports: [
@@ -26,6 +29,9 @@ import { JwtStrategy } from '~/auth/jwt.strategy';
     }),
     AuthModule,
     UserModule,
+    ProductModule,
+    CategoryModule,
+    BrandModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
