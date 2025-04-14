@@ -4,6 +4,7 @@ import slugify from 'slugify';
 import { Repository } from 'typeorm';
 import { ProductEntity } from '~/entities/product.entity';
 import { CreateProductDTO } from '~/product/dto/create-product.dto';
+import { SearchProductDto } from '~/product/dto/search-product.dto';
 import { UpdateProductDto } from '~/product/dto/update-product.dto';
 
 @Injectable()
@@ -74,5 +75,52 @@ export class ProductService {
   async remove(id: number): Promise<void> {
     const Product = await this.findOne(id); // Kiểm tra sự tồn tại của sản phẩm
     await this.productRepository.remove(Product); // Xóa sản phẩm
+  }
+
+  async search(query: SearchProductDto) {
+    const {
+      page = 1,
+      limit = 10,
+      categoryId,
+      brandId,
+      keyword,
+      minPrice,
+      maxPrice,
+    } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.brand', 'brand');
+
+    if (categoryId) {
+      qb.andWhere('product.categoryId = :categoryId', { categoryId });
+    }
+
+    if (brandId) {
+      qb.andWhere('product.brandId = :brandId', { brandId });
+    }
+
+    if (keyword) {
+      qb.andWhere('product.name LIKE :keyword', { keyword: `%${keyword}%` });
+    }
+
+    if (minPrice) {
+      qb.andWhere('product.price >= :minPrice', { minPrice });
+    }
+
+    if (maxPrice) {
+      qb.andWhere('product.price <= :maxPrice', { maxPrice });
+    }
+
+    const [data, total] = await qb.skip(skip).take(limit).getManyAndCount();
+
+    return {
+      data,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+    };
   }
 }

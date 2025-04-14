@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
   OneToMany,
   Index,
+  JoinColumn,
 } from 'typeorm';
 import { BrandEntity } from '~/entities/brand.entity';
 import { CartEntity } from '~/entities/cart.entity';
@@ -37,11 +38,18 @@ export class ProductEntity {
   imageUrl: string;
 
   @ManyToOne(() => CategoryEntity, (category) => category.products)
+  @JoinColumn({ name: 'categoryId' })
   category: CategoryEntity;
 
+  @Column()
+  categoryId: number;
+
   @ManyToOne(() => BrandEntity, (brand) => brand.products)
+  @JoinColumn({ name: 'brandId' })
   brand: BrandEntity;
 
+  @Column()
+  brandId: number;
   @OneToMany(() => CartEntity, (cart) => cart.product)
   carts: CartEntity[];
 

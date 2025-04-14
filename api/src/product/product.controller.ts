@@ -7,10 +7,12 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '~/guard/jwt.guard';
 import { CreateProductDTO } from '~/product/dto/create-product.dto';
+import { SearchProductDto } from '~/product/dto/search-product.dto';
 import { UpdateProductDto } from '~/product/dto/update-product.dto';
 import { ProductService } from '~/product/product.service';
 
@@ -27,6 +29,11 @@ export class ProductController {
   @Get()
   findAll() {
     return this.productService.findAll();
+  }
+
+  @Get('search')
+  async search(@Query() query: SearchProductDto) {
+    return this.productService.search(query);
   }
 
   @Get(':id')
@@ -51,4 +58,5 @@ export class ProductController {
   remove(@Param('id', ParseIntPipe) id: string) {
     return this.productService.remove(+id);
   }
+
 }

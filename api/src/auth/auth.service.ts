@@ -71,7 +71,6 @@ export class AuthService {
 
   async refreshToken(refreshTokenHeader: string) {
     let token = '';
-    console.log(refreshTokenHeader);
     const parts = refreshTokenHeader.split(' ');
     if (parts.length === 2 && parts[0] === 'Bearer') {
       token = parts[1];
