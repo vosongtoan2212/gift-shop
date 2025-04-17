@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import slugify from 'slugify';
 import { Repository } from 'typeorm';
 import { ProductEntity } from '~/entities/product.entity';
+import { ReviewEntity } from '~/entities/review.entity';
 import { CreateProductDTO } from '~/product/dto/create-product.dto';
 import { SearchProductDto } from '~/product/dto/search-product.dto';
 import { UpdateProductDto } from '~/product/dto/update-product.dto';
@@ -92,7 +93,20 @@ export class ProductService {
     const qb = this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.brand', 'brand');
+      .leftJoinAndSelect('product.brand', 'brand')
+      .leftJoin(
+        (qb) =>
+          qb
+            .select('review.productId', 'productId')
+            .addSelect('AVG(review.rating)', 'averageRating')
+            .addSelect('COUNT(review.id)', 'reviewCount')
+            .from(ReviewEntity, 'review')
+            .groupBy('review.productId'),
+        'review_summary',
+        'review_summary.productId = product.id',
+      )
+      .addSelect('COALESCE(review_summary.averageRating, 0)', 'averageRating')
+      .addSelect('COALESCE(review_summary.reviewCount, 0)', 'reviewCount');
 
     if (categoryId) {
       qb.andWhere('product.categoryId = :categoryId', { categoryId });
@@ -114,11 +128,19 @@ export class ProductService {
       qb.andWhere('product.price <= :maxPrice', { maxPrice });
     }
 
-    const [data, total] = await qb.skip(skip).take(limit).getManyAndCount();
+    const { entities, raw } = await qb.skip(skip).take(limit).getRawAndEntities();
 
+    const data = entities.map((product, index) => {
+      return {
+        ...product,
+        averageRating: Number(raw[index]?.averageRating ?? 0),
+        reviewCount: Number(raw[index]?.reviewCount ?? 0),
+      };
+    });
+    
     return {
       data,
-      total,
+      total: data.length,
       page: Number(page),
       limit: Number(limit),
     };

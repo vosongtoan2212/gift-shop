@@ -12,6 +12,7 @@ import {
 import { BrandEntity } from '~/entities/brand.entity';
 import { CartEntity } from '~/entities/cart.entity';
 import { CategoryEntity } from '~/entities/category.entity';
+import { ReviewEntity } from '~/entities/review.entity';
 
 @Entity('products')
 export class ProductEntity {
@@ -50,8 +51,12 @@ export class ProductEntity {
 
   @Column()
   brandId: number;
+
   @OneToMany(() => CartEntity, (cart) => cart.product)
   carts: CartEntity[];
+
+  @OneToMany(() => ReviewEntity, (review) => review.product)
+  reviews: ReviewEntity[];
 
   @CreateDateColumn()
   createdAt: Date;
