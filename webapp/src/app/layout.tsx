@@ -5,6 +5,7 @@ import { ConfigProvider } from "antd";
 import "./globals.css";
 import Header from "~/components/layout/Header";
 import Footer from "~/components/layout/Footer";
+import { GlobalContextProvider } from "~/context/GlobalContextProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -40,9 +41,7 @@ export default function RootLayout({
               },
             }}
           >
-            <Header />
-            <main className="pt-18 sm:pt-32">{children}</main>
-            <Footer />
+            <GlobalContextProvider>{children}</GlobalContextProvider>
           </ConfigProvider>
         </AntdRegistry>
       </body>
