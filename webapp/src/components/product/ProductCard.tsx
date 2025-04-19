@@ -9,7 +9,7 @@ import formatCurrency from "~/services/format-currency";
 export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm">
-      <Link href={`san-pham/${product.slug}`}>
+      <Link href={`/san-pham/${product.slug}`}>
         <div className="w-full h-[250px] overflow-hidden rounded-t-lg bg-white flex items-center justify-center">
           <img
             className="w-full h-full object-cover"

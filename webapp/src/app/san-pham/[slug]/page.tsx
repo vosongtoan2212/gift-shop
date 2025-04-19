@@ -11,6 +11,7 @@ import { Product } from "~/types/product";
 import { fetchData } from "~/utils/fetchData";
 import AddToCart from "~/components/product/AddToCart";
 import DefaultLayout from "~/components/layout/DefaultLayout";
+import formatCurrency from "~/services/format-currency";
 
 type Props = {
   params: { slug: string };
@@ -38,7 +39,7 @@ export default async function ProductDetail({ params }: Props) {
               </h1>
               <div className="mt-4 sm:items-center sm:gap-4 sm:flex">
                 <p className="text-2xl font-extrabold text-gray-900 sm:text-3xl">
-                  {productData.price}
+                  {formatCurrency(productData.price)}
                 </p>
 
                 <div className="flex items-center gap-2 mt-2 sm:mt-0">

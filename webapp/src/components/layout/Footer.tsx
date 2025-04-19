@@ -22,7 +22,7 @@ const Footer = () => {
           <ul className="text-sm space-y-1">
             {categoryList.map((category: Category, key: number) => (
               <li key={key}>
-                <Link href={`danh-muc/${category.id}`}>{category.name}</Link>
+                <Link href={`/danh-muc/${category.id}`}>{category.name}</Link>
               </li>
             ))}
           </ul>
