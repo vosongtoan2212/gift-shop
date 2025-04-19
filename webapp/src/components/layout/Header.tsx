@@ -1,6 +1,11 @@
 "use client";
 import { useState } from "react";
-import { MenuOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  MenuOutlined,
+  SearchOutlined,
+  ShoppingCartOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import { Button, Drawer, Input, Menu, Spin } from "antd";
 import Link from "next/link";
 import { Category } from "~/types/category";
@@ -9,6 +14,7 @@ import { deleteCookie } from "cookies-next";
 
 const ActionMenu = () => {
   const { isLoggedIn, setIsLoggedIn } = useGlobalContext();
+  // const isLoggedIn = true;
 
   const logout = () => {
     setIsLoggedIn(false);
@@ -16,26 +22,34 @@ const ActionMenu = () => {
     deleteCookie("refreshToken");
   };
   if (isLoggedIn == null) {
-    return <Spin />
+    return <Spin />;
   }
   if (isLoggedIn) {
     return (
       <div className="flex gap-2">
+        <Link href="/gio-hang">
+          <Button
+            className="text-xl"
+            icon={<ShoppingCartOutlined />}
+            variant="filled"
+          ></Button>
+        </Link>
         <Button type="primary" onClick={logout}>
           Đăng xuất
         </Button>
       </div>
     );
-  }
-  if (!isLoggedIn) {
+  } else {
     return (
       <div className="flex gap-2">
-        <Button type="link" href="/register">
-          Đăng ký
-        </Button>
-        <Button type="primary" href="/login" icon={<UserOutlined />}>
-          Đăng nhập
-        </Button>
+        <Link href="/register">
+          <Button type="link">Đăng ký</Button>
+        </Link>
+        <Link href="/login">
+          <Button type="primary" icon={<UserOutlined />}>
+            Đăng nhập
+          </Button>
+        </Link>
       </div>
     );
   }
@@ -79,7 +93,9 @@ const Header = () => {
           style={{ justifyContent: "flex-end" }}
           items={categoryList.map((category: Category) => ({
             key: category.id,
-            label: <Link href={`danh-muc/${category.id}`}>{category.name}</Link>,
+            label: (
+              <Link href={`/danh-muc/${category.id}`}>{category.name}</Link>
+            ),
           }))}
         />
       </div>

@@ -3,9 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
 import "./globals.css";
-import Header from "~/components/layout/Header";
-import Footer from "~/components/layout/Footer";
 import { GlobalContextProvider } from "~/context/GlobalContextProvider";
+import ProgressBar from "~/components/common/ProgressBar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,12 +31,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ProgressBar />
         <AntdRegistry>
           <ConfigProvider
             theme={{
               token: {
                 colorText: "#393280",
-                colorPrimary: "#ED553B",
+                colorPrimary: "#FA9BAB",
               },
             }}
           >

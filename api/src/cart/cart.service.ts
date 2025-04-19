@@ -12,16 +12,36 @@ export class CartService {
     private readonly cartRepository: Repository<CartEntity>,
   ) {}
 
-  async create(
+  async createOrUpdate(
     payloadToken: any,
     createCartDto: CreateCartDto,
   ): Promise<CartEntity> {
-    const newCart = this.cartRepository.create({
-      user: { id: payloadToken.sub },
-      product: { id: createCartDto.productId },
-      quantity: createCartDto.quantity,
+    const userId = payloadToken.sub;
+    const productId = createCartDto.productId;
+    const quantity = createCartDto.quantity;
+
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+    const existingCart = await this.cartRepository.findOne({
+      where: {
+        user: { id: userId },
+        product: { id: productId },
+      },
+      relations: ['user', 'product'],
     });
-    return this.cartRepository.save(newCart);
+
+    if (existingCart) {
+      // Nếu đã có thì cập nhật số lượng
+      existingCart.quantity += quantity;
+      return this.cartRepository.save(existingCart);
+    } else {
+      // Nếu chưa có thì tạo mới
+      const newCart = this.cartRepository.create({
+        user: { id: userId },
+        product: { id: productId },
+        quantity,
+      });
+      return this.cartRepository.save(newCart);
+    }
   }
 
   async findAll(payloadToken: any): Promise<CartEntity[]> {

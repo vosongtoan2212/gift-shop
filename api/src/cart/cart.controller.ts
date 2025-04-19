@@ -23,7 +23,7 @@ export class CartController {
 
   @Post()
   create(@Request() req, @Body() createCartDto: CreateCartDto) {
-    return this.cartService.create(req.user, createCartDto);
+    return this.cartService.createOrUpdate(req.user, createCartDto);
   }
 
   @Get()

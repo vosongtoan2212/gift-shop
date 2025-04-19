@@ -1,77 +1,45 @@
 "use client";
 import Link from "next/link";
 import React from "react";
-import { Button } from "antd";
 import { ProductCardProps } from "~/types/product";
 import StarRating from "~/components/product/StarRating";
-import { fetchData } from "~/utils/fetchData";
-import { API_URL } from "~/constants";
-import { getCookie } from "cookies-next";
+import AddToCart from "~/components/product/AddToCart";
+import formatCurrency from "~/services/format-currency";
 
 export function ProductCard({ product }: ProductCardProps) {
-  
-  const addToCart = async (productId: number) => {
-    const path = `${API_URL}/cart`;
-    const method = "POST";
-    const token = getCookie("accessToken"); // hoặc bỏ nếu không cần
-
-    const body = JSON.stringify({
-      productId,
-      quantity: 1,
-    });
-
-    const headers = {
-      "Content-Type": "application/json",
-    };
-
-    const { data, errorMessage } = await fetchData(
-      path,
-      method,
-      headers,
-      body,
-      token as string,
-    );
-
-    if (errorMessage) {
-      console.error("Error:", errorMessage);
-    } else {
-      console.log("Response:", data);
-    }
-  };
-
   return (
-    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-      <Link href="#">
-        <img
-          className="p-8 rounded-t-lg"
-          src={product.imageUrl}
-          alt={product.name}
-        />
+    <div className="w-full bg-white border border-gray-200 rounded-lg shadow-sm">
+      <Link href={`san-pham/${product.slug}`}>
+        <div className="w-full h-[250px] overflow-hidden rounded-t-lg bg-white flex items-center justify-center">
+          <img
+            className="w-full h-full object-cover"
+            src={product.imageUrl}
+            alt={product.name}
+          />
+        </div>
       </Link>
       <div className="px-5 pb-5">
-        <Link href="#">
+        <Link href={`san-pham/${product.slug}`}>
           <h5
-            className="text-xl h-14 font-semibold tracking-tight text-gray-900 dark:text-white line-clamp-2 overflow-hidden"
+            className="text-base my-2 font-semibold tracking-tight text-gray-900 line-clamp-1 overflow-hidden"
             title={product.name}
           >
             {product.name}
           </h5>
         </Link>
-        <div className="flex items-center mt-2.5 mb-5">
+        <div className="flex items-center my-2">
           <div className="flex items-center space-x-1 rtl:space-x-reverse">
             <StarRating averageRating={product.averageRating}></StarRating>
           </div>
-          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-sm dark:bg-blue-200 dark:text-blue-800 ms-3">
+          <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-sm">
             {Number(product.averageRating.toFixed(1))}
           </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-3xl font-bold text-gray-900 dark:text-white">
-            {product.price} đ
+          <span className="text-xl font-bold text-primary">
+            {formatCurrency(product.price)}
           </span>
-          <Button type="primary" onClick={() => addToCart(product.id)}>
-            Add to cart
-          </Button>
+          <AddToCart productId={product.id}></AddToCart>
         </div>
       </div>
     </div>

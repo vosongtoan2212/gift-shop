@@ -87,6 +87,7 @@ export class ProductService {
       keyword,
       minPrice,
       maxPrice,
+      slug,
     } = query;
     const skip = (page - 1) * limit;
 
@@ -116,6 +117,10 @@ export class ProductService {
       qb.andWhere('product.brandId = :brandId', { brandId });
     }
 
+    if (slug) {
+      qb.andWhere('product.slug LIKE :slug', { slug });
+    }
+
     if (keyword) {
       qb.andWhere('product.name LIKE :keyword', { keyword: `%${keyword}%` });
     }
@@ -128,7 +133,13 @@ export class ProductService {
       qb.andWhere('product.price <= :maxPrice', { maxPrice });
     }
 
-    const { entities, raw } = await qb.skip(skip).take(limit).getRawAndEntities();
+    const countQb = qb.clone();
+    const total = await countQb.getCount();
+
+    const { entities, raw } = await qb
+      .skip(skip)
+      .take(limit)
+      .getRawAndEntities();
 
     const data = entities.map((product, index) => {
       return {
@@ -137,10 +148,10 @@ export class ProductService {
         reviewCount: Number(raw[index]?.reviewCount ?? 0),
       };
     });
-    
+
     return {
       data,
-      total: data.length,
+      total,
       page: Number(page),
       limit: Number(limit),
     };
