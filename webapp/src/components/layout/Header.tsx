@@ -11,10 +11,10 @@ import Link from "next/link";
 import { Category } from "~/types/category";
 import { useGlobalContext } from "~/context/GlobalContextProvider";
 import { deleteCookie } from "cookies-next";
+import { useRouter } from 'next-nprogress-bar';
 
 const ActionMenu = () => {
   const { isLoggedIn, setIsLoggedIn } = useGlobalContext();
-  // const isLoggedIn = true;
 
   const logout = () => {
     setIsLoggedIn(false);
@@ -58,6 +58,22 @@ const ActionMenu = () => {
 const Header = () => {
   const { categoryList } = useGlobalContext();
   const [open, setOpen] = useState(false);
+  
+  const [keyword, setKeyword] = useState("");
+  const router = useRouter();
+
+  const handleSearch = () => {
+    const trimmed = keyword.trim();
+    if (trimmed) {
+      router.push(`/tim-kiem/${encodeURIComponent(trimmed)}`);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-md">
@@ -71,8 +87,16 @@ const Header = () => {
         <div className="flex flex-1 mx-4">
           <Input
             placeholder="Tìm kiếm sản phẩm..."
-            prefix={<SearchOutlined />}
+            prefix={
+              <SearchOutlined
+                onClick={handleSearch}
+                className="cursor-pointer"
+              />
+            }
             className="rounded-md"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            onKeyDown={handleKeyDown}
           />
         </div>
 

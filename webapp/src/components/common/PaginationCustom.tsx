@@ -1,6 +1,6 @@
 "use client";
 import { ConfigProvider, Pagination } from "antd";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next-nprogress-bar';
 
 type PaginationProps = {
   totalItems: number;
