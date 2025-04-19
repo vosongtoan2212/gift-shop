@@ -37,8 +37,14 @@ export async function isLogin(): Promise<boolean> {
   const accessToken = await getCookie("accessToken", { cookies }); // Cookie access token
   const refreshToken = await getCookie("refreshToken", { cookies }); // Cookie refresh token
 
-  if (!accessToken) {
+  if (!accessToken && !refreshToken ) {
     return false;
+  }
+  if (!accessToken && refreshToken) {
+    const newAccessToken = await refreshAccessToken(refreshToken as string);
+    await setCookie("accessToken", newAccessToken, { cookies });
+
+    return true;
   }
 
   try {
