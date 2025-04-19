@@ -12,6 +12,7 @@ import { fetchData } from "~/utils/fetchData";
 import AddToCart from "~/components/product/AddToCart";
 import DefaultLayout from "~/components/layout/DefaultLayout";
 import formatCurrency from "~/services/format-currency";
+import ReviewSection from "~/components/product/ReviewSection";
 
 type Props = {
   params: { slug: string };
@@ -24,6 +25,9 @@ export default async function ProductDetail({ params }: Props) {
     `${API_URL}/product/search?slug=${slug}`
   );
   const productData = product.data[0] as Product;
+
+  const { data: reviewList } = await fetchData(`${API_URL}/review/${productData.id}`);
+
   return (
     <DefaultLayout>
       <section className="py-8 bg-white md:py-16 antialiased">
@@ -106,6 +110,7 @@ export default async function ProductDetail({ params }: Props) {
             </div>
           </div>
         </div>
+        <ReviewSection reviewList={reviewList} productId={productData.id}></ReviewSection>
       </section>
     </DefaultLayout>
   );

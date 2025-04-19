@@ -10,6 +10,7 @@ import { ProductModule } from './product/product.module';
 import { CategoryModule } from './category/category.module';
 import { BrandModule } from './brand/brand.module';
 import { CartModule } from './cart/cart.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CartModule } from './cart/cart.module';
     CategoryModule,
     BrandModule,
     CartModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

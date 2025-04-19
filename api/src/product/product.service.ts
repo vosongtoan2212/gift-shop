@@ -122,7 +122,13 @@ export class ProductService {
     }
 
     if (keyword) {
-      qb.andWhere('product.name LIKE :keyword', { keyword: `%${keyword}%` });
+      const words = keyword.trim().split(/\s+/); // tách từ
+      for (const [i, word] of words.entries()) {
+        qb.andWhere(
+          `(product.name LIKE :kw${i} OR product.description LIKE :kw${i} OR brand.name LIKE :kw${i})`,
+          { [`kw${i}`]: `%${word}%` },
+        );
+      }
     }
 
     if (minPrice) {
