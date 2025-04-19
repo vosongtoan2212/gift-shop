@@ -64,9 +64,18 @@ export default function Login() {
     if (token.accessToken) {
       onLoginSuccess();
       setIsLoggedIn(true);
-      const options = values.remember ? { maxAge: 60 * 6000 } : undefined;
-      setCookie("accessToken", token.accessToken, options);
-      setCookie("refreshToken", token.refreshToken, options);
+
+      if (values.remember) {
+        setCookie("accessToken", token.accessToken, {
+          maxAge: 15 * 60,
+        });
+        setCookie("refreshToken", token.refreshToken, {
+          maxAge: 7 * 24 * 60 * 60,
+        });
+      } else {
+        setCookie("accessToken", token.accessToken);
+        setCookie("refreshToken", token.refreshToken);
+      }
     } else {
       const temp = errorMessage;
       setErrorMessage({
