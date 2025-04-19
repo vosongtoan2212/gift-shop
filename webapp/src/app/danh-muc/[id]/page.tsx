@@ -16,14 +16,11 @@ export default async function Category({ params, searchParams }: Props) {
   const searchParamsValue = await searchParams;
   const page = searchParamsValue.page || 1;
   const pageSize = searchParamsValue.pageSize || 10;
-  console.log("page", page);
   const { data: category } = await fetchData(`${API_URL}/category/${id}`);
 
   const { data: productOfCategory } = await fetchData(
     `${API_URL}/product/search?page=${page}&categoryId=${id}&limit=${pageSize}`
   );
-
-  console.log(productOfCategory);
 
   return (
     <DefaultLayout>

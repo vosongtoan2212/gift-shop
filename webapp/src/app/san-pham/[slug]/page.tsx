@@ -23,7 +23,6 @@ export default async function ProductDetail({ params }: Props) {
     `${API_URL}/product/search?slug=${slug}`
   );
   const productData = product.data[0] as Product;
-  console.log(product.data[0]);
   return (
     <DefaultLayout>
       <section className="py-8 bg-white md:py-16 antialiased">

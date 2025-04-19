@@ -10,13 +10,10 @@ export default function AddToCart({ productId }: { productId: number }) {
   const addToCart = async (productId: number) => {
     const path = `${API_URL}/cart`;
     const method = "POST";
-    const token = getCookie("accessToken"); // hoặc bỏ nếu không cần
-
+    const token = getCookie("accessToken");
     const body = JSON.stringify({ productId, quantity: 1 });
-
     const headers = { "Content-Type": "application/json" };
-
-    const { data, errorMessage } = await fetchData(
+    const { errorMessage } = await fetchData(
       path,
       method,
       headers,
@@ -26,8 +23,6 @@ export default function AddToCart({ productId }: { productId: number }) {
 
     if (errorMessage) {
       console.error("Error:", errorMessage);
-    } else {
-      console.log("Response:", data);
     }
   };
 

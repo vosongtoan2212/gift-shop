@@ -1,4 +1,3 @@
-// app/api/cart/add-to-cart/route.ts
 import { getCookie } from "cookies-next";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -10,11 +9,9 @@ export async function POST(req: Request) {
   const body = await req.json();
   const { productId, quantity } = body;
   const loggedIn = await isLogin();
-  console.log("loggedIn", loggedIn);
   
   if (loggedIn) {
     const accessToken = await getCookie("accessToken", { cookies });
-    console.log("accessToken", accessToken);
     const path = `${API_URL}/cart`;
     const method = "POST";
 
@@ -37,8 +34,6 @@ export async function POST(req: Request) {
 
     if (errorMessage) {
       console.error("Error:", errorMessage);
-    } else {
-      console.log("Response:", data);
     }
 
     return NextResponse.json({ data });

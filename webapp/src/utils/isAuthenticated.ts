@@ -52,7 +52,6 @@ export async function isLogin(): Promise<boolean> {
       }
 
       const newAccessToken = await refreshAccessToken(refreshToken as string);
-      console.log("newAccessToken", newAccessToken)
       await setCookie("accessToken", newAccessToken, { cookies });
 
       return true; // Token đã được làm mới
