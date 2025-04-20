@@ -20,6 +20,7 @@ const ActionMenu = () => {
     setIsLoggedIn(false);
     deleteCookie("accessToken");
     deleteCookie("refreshToken");
+    deleteCookie("user");
   };
   if (isLoggedIn == null) {
     return <Spin />;

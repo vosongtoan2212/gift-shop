@@ -59,22 +59,24 @@ export default function Login() {
       "Content-Type": "application/json",
     };
 
-    const { data: token } = await fetchData(path, method, headers, body);
+    const { data } = await fetchData(path, method, headers, body);
 
-    if (token.accessToken) {
+    if (data.accessToken) {
       onLoginSuccess();
       setIsLoggedIn(true);
 
       if (values.remember) {
-        setCookie("accessToken", token.accessToken, {
+        setCookie("accessToken", data.accessToken, {
           maxAge: 15 * 60,
         });
-        setCookie("refreshToken", token.refreshToken, {
+        setCookie("refreshToken", data.refreshToken, {
           maxAge: 7 * 24 * 60 * 60,
         });
+        setCookie("user", data.user, { maxAge: 7 * 24 * 60 * 60 });
       } else {
-        setCookie("accessToken", token.accessToken);
-        setCookie("refreshToken", token.refreshToken);
+        setCookie("accessToken", data.accessToken);
+        setCookie("refreshToken", data.refreshToken);
+        setCookie("user", data.user);
       }
     } else {
       const temp = errorMessage;
