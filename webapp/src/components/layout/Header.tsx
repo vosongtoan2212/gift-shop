@@ -4,14 +4,15 @@ import {
   MenuOutlined,
   SearchOutlined,
   ShoppingCartOutlined,
+  ShoppingOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { Button, Drawer, Input, Menu, Spin } from "antd";
+import { Button, Drawer, Input, Menu, Spin, Tooltip } from "antd";
 import Link from "next/link";
 import { Category } from "~/types/category";
 import { useGlobalContext } from "~/context/GlobalContextProvider";
 import { deleteCookie } from "cookies-next";
-import { useRouter } from 'next-nprogress-bar';
+import { useRouter } from "next-nprogress-bar";
 
 const ActionMenu = () => {
   const { isLoggedIn, setIsLoggedIn } = useGlobalContext();
@@ -29,12 +30,25 @@ const ActionMenu = () => {
     return (
       <div className="flex gap-2">
         <Link href="/gio-hang">
-          <Button
-            className="text-xl"
-            icon={<ShoppingCartOutlined />}
-            variant="filled"
-          ></Button>
+          <Tooltip title={"Giỏ hàng"}>
+            <Button
+              className="text-xl"
+              icon={<ShoppingCartOutlined />}
+              variant="filled"
+            ></Button>
+          </Tooltip>
         </Link>
+
+        <Link href="/don-hang">
+          <Tooltip title={"Đơn hàng"}>
+            <Button
+              className="text-xl"
+              icon={<ShoppingOutlined />}
+              variant="filled"
+            ></Button>
+          </Tooltip>
+        </Link>
+
         <Button type="primary" onClick={logout}>
           Đăng xuất
         </Button>
@@ -59,7 +73,7 @@ const ActionMenu = () => {
 const Header = () => {
   const { categoryList } = useGlobalContext();
   const [open, setOpen] = useState(false);
-  
+
   const [keyword, setKeyword] = useState("");
   const router = useRouter();
 

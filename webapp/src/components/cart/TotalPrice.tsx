@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import formatCurrency from "~/services/format-currency";
+import formatCurrency from "~/utils/format-currency";
 import { Cart } from "~/types/cart";
 
 type TotalPriceProps = {

@@ -1,7 +1,7 @@
 import QuantityControl from "~/components/cart/QuatityControl";
 import { Button } from "antd";
 import { Cart } from "~/types/cart";
-import formatCurrency from "~/services/format-currency";
+import formatCurrency from "~/utils/format-currency";
 
 type CartItemCardProps = {
   item: Cart;

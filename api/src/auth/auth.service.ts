@@ -21,18 +21,27 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const payload = { email: user.email, sub: user.id };
-    const accessToken = await this.jwtService.sign(payload, {
+    const payloadAccessToken = {
+      email: user.email,
+      sub: user.id,
+      fullname: user.fullname,
+      profilePictureURL: user.profilePictureURL,
+    };
+    const payloadRefreshToken = {
+      email: user.email,
+      sub: user.id,
+    };
+    const accessToken = await this.jwtService.sign(payloadAccessToken, {
       expiresIn: '15m',
     });
-    const refreshToken = await this.jwtService.sign(payload, {
+    const refreshToken = await this.jwtService.sign(payloadRefreshToken, {
       expiresIn: '7d',
     });
 
     // Lưu refreshToken vào DB để quản lý
     await this.userService.updateRefreshToken(user.id, refreshToken);
 
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, user: payloadAccessToken };
   }
 
   async register(registerDto: RegisterDTO) {
@@ -82,18 +91,22 @@ export class AuthService {
       if (!user) {
         throw new UnauthorizedException();
       }
-
       // Kiểm tra refreshToken có khớp không
       if (user.refreshToken !== token) {
         throw new UnauthorizedException('Invalid refresh token');
       }
 
-      const payload = { email: user.email, sub: user.id };
+      const payload = {
+        email: user.email,
+        sub: user.id,
+        fullname: user.fullname,
+        profilePictureURL: user.profilePictureURL,
+      };
       const newAccessToken = await this.jwtService.sign(payload, {
         expiresIn: '15m',
       });
 
-      return { accessToken: newAccessToken };
+      return { accessToken: newAccessToken, user: payload };
     } catch (error) {
       throw new UnauthorizedException(
         'Invalid or expired refresh token',

@@ -1,31 +1,31 @@
 "use client";
 import { getCookie } from "cookies-next";
 import React, { useEffect, useState } from "react";
-import CartList from "~/components/cart/CartList";
+import OrderList from "~/components/order/OrderList";
 import DefaultLayout from "~/components/layout/DefaultLayout";
 import { API_URL } from "~/constants";
 import { useGlobalContext } from "~/context/GlobalContextProvider";
-import { Cart } from "~/types/cart";
+import { Order } from "~/types/order";
 import { fetchData } from "~/utils/fetchData";
 
-export default function CartPage() {
+export default function OrderPage() {
   const { isLoggedIn } = useGlobalContext();
-  const [cartList, setCartList] = useState<Cart[]>([]);
+  const [orderList, setOrderList] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!isLoggedIn) return;
     const accessToken = getCookie("accessToken") as string;
-    const fetchCart = async () => {
+    const fetchOrder = async () => {
       try {
         const { data } = await fetchData(
-          `${API_URL}/cart`,
+          `${API_URL}/order`,
           "GET",
           {},
           "",
           accessToken
         );
-        setCartList(data);
+        setOrderList(data);
       } catch (err) {
         console.error("Lỗi khi lấy giỏ hàng:", err);
       } finally {
@@ -34,7 +34,7 @@ export default function CartPage() {
     };
 
     if (isLoggedIn !== null) {
-      fetchCart();
+      fetchOrder();
     }
   }, [isLoggedIn]);
 
@@ -50,7 +50,7 @@ export default function CartPage() {
     <DefaultLayout>
       <section className="bg-white py-8 antialiased md:py-16">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
-          <CartList cartList={cartList}></CartList>
+          <OrderList orderList={orderList}></OrderList>
         </div>
       </section>
     </DefaultLayout>

@@ -20,8 +20,23 @@ export class OrderEntity {
   @Column()
   totalAmount: number;
 
-  @Column({ default: 'pending' }) // Các trạng thái: pending, completed, cancelled
+  @Column({ default: 'pending' }) // Các trạng thái: pending, processing, completed, cancelled
   status: string;
+
+  @Column()
+  fullName: string;
+
+  @Column()
+  email: string;
+
+  @Column()
+  phone: string;
+
+  @Column()
+  address: string;
+
+  @Column({ nullable: true })
+  note: string;
 
   @CreateDateColumn()
   createdAt: Date;

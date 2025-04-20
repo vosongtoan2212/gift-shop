@@ -4,6 +4,7 @@ import { List, Rate, Input, Button, Form, message, Avatar } from "antd";
 import { fetchData } from "~/utils/fetchData";
 import { API_URL } from "~/constants";
 import { getCookie } from "cookies-next";
+import { useGlobalContext } from "~/context/GlobalContextProvider";
 
 const { TextArea } = Input;
 
@@ -33,6 +34,7 @@ interface FieldType {
 export default function ReviewSection({ reviewList, productId }: Props) {
   const [reviews, setReviews] = useState<Review[]>(reviewList);
   const [loading, setLoading] = useState(false);
+  const { isLoggedIn } = useGlobalContext();
 
   const [form] = Form.useForm();
   const handleSubmit = async (values: FieldType) => {
@@ -73,7 +75,7 @@ export default function ReviewSection({ reviewList, productId }: Props) {
     <div className="space-y-6">
       <h3 className="text-lg font-semibold">Đánh giá sản phẩm</h3>
 
-      {true && (
+      {isLoggedIn && (
         <Form form={form} onFinish={handleSubmit} layout="vertical">
           <Form.Item<FieldType>
             name="rating"
@@ -99,6 +101,10 @@ export default function ReviewSection({ reviewList, productId }: Props) {
         </Form>
       )}
 
+      {!isLoggedIn && (
+        <p className="text-sm text-gray-500">Bạn cần đăng nhập để đánh giá.</p>
+      )}
+
       <List
         dataSource={reviews}
         itemLayout="vertical"
@@ -122,8 +128,6 @@ export default function ReviewSection({ reviewList, productId }: Props) {
           </List.Item>
         )}
       />
-
-      {/* {!user && <p className="text-sm text-gray-500">Bạn cần đăng nhập để đánh giá.</p>} */}
     </div>
   );
 }

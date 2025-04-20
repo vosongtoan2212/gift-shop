@@ -1,13 +1,7 @@
 import { cookies } from "next/headers";
 import { getCookie, setCookie } from "cookies-next";
-import jwt from "jsonwebtoken";
-import { API_URL, JWT_SECRET } from "~/constants";
+import { API_URL } from "~/constants";
 import { fetchData } from "~/utils/fetchData";
-
-interface JwtPayload {
-  exp: number; // Hạn sử dụng của token (UNIX timestamp)
-  [key: string]: unknown;
-}
 
 // Hàm gọi API để refresh access token
 async function refreshAccessToken(refreshToken: string) {
@@ -30,39 +24,48 @@ async function refreshAccessToken(refreshToken: string) {
     throw new Error("Failed to refresh token");
   }
 
-  return data.accessToken;
+  return data;
 }
 
 export async function isLogin(): Promise<boolean> {
   const accessToken = await getCookie("accessToken", { cookies }); // Cookie access token
   const refreshToken = await getCookie("refreshToken", { cookies }); // Cookie refresh token
 
-  if (!accessToken && !refreshToken ) {
+  if (!accessToken && !refreshToken) {
     return false;
   }
   if (!accessToken && refreshToken) {
-    const newAccessToken = await refreshAccessToken(refreshToken as string);
-    await setCookie("accessToken", newAccessToken, { cookies });
+    const data = await refreshAccessToken(refreshToken as string);
+    await setCookie("accessToken", data.accessToken, {
+      cookies,
+      maxAge: 15 * 60,
+    });
+    await setCookie("user", data.user, { cookies, maxAge: 15 * 60 });
 
     return true;
   }
 
   try {
-    jwt.verify(accessToken as string, JWT_SECRET || "undefined") as JwtPayload;
+    const path = `${API_URL}/auth/check`;
+    const method = "POST";
+    const headers = {
+      "Content-Type": "application/json",
+    };
 
-    return true; // Token còn hạn và hợp lệ
-  } catch (error: any) {
-    if (error.name === "TokenExpiredError") {
-      if (!refreshToken) {
-        return false;
-      }
-
-      const newAccessToken = await refreshAccessToken(refreshToken as string);
-      await setCookie("accessToken", newAccessToken, { cookies });
-
-      return true; // Token đã được làm mới
+    const { res } = await fetchData(path, method, headers, "", accessToken);
+    if (res?.ok) {
+      return true; // Token còn hạn và hợp lệ
     }
 
+    if (!refreshToken) {
+      return false;
+    }
+
+    const newAccessToken = await refreshAccessToken(refreshToken as string);
+    await setCookie("accessToken", newAccessToken, { cookies });
+
+    return true; // Token đã được làm mới
+  } catch (error: any) {
     console.error(error);
     return false; // Token không hợp lệ hoặc lỗi khác
   }

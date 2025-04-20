@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import {
   Entity,
   Column,
@@ -17,6 +18,7 @@ export class UserEntity {
   id: number;
 
   @Column()
+  @Exclude()
   password: string;
 
   @Column({ unique: true })
@@ -30,6 +32,7 @@ export class UserEntity {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
+  @Exclude()
   createdAt: Date;
 
   @UpdateDateColumn({
@@ -38,15 +41,19 @@ export class UserEntity {
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
+  @Exclude()
   updatedAt: Date;
 
   @DeleteDateColumn({ name: 'deleted_at', type: 'timestamp' })
+  @Exclude()
   deletedAt: Date;
 
   @Column({ name: 'last_login_date', type: 'timestamp', nullable: true })
+  @Exclude()
   lastLoginDate?: Date;
 
   @Column({ nullable: true })
+  @Exclude()
   refreshToken: string;
 
   @Column({ name: 'profile_picture_url', nullable: true })

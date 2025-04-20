@@ -4,7 +4,7 @@ import React from "react";
 import { ProductCardProps } from "~/types/product";
 import StarRating from "~/components/product/StarRating";
 import AddToCart from "~/components/product/AddToCart";
-import formatCurrency from "~/services/format-currency";
+import formatCurrency from "~/utils/format-currency";
 
 export function ProductCard({ product }: ProductCardProps) {
   return (

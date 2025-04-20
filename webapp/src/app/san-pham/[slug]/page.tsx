@@ -11,7 +11,7 @@ import { Product } from "~/types/product";
 import { fetchData } from "~/utils/fetchData";
 import AddToCart from "~/components/product/AddToCart";
 import DefaultLayout from "~/components/layout/DefaultLayout";
-import formatCurrency from "~/services/format-currency";
+import formatCurrency from "~/utils/format-currency";
 import ReviewSection from "~/components/product/ReviewSection";
 
 type Props = {

@@ -3,11 +3,18 @@ import { fetchData } from "~/utils/fetchData";
 import { API_URL } from "~/constants";
 import { Category } from "~/types/category";
 import { createContext, useContext, useEffect, useState } from "react";
+import { getCookie } from "cookies-next";
 
 interface GlobalContextType {
   categoryList: Category[];
   isLoggedIn: boolean | null;
   setIsLoggedIn: Function;
+  userInfo: {
+    email: string;
+    fullname: string;
+    profilePictureURL: string;
+    sub: number;
+  };
 }
 
 // Tạo Context
@@ -23,6 +30,9 @@ export const GlobalContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const userInfoString = getCookie("user") as string;
+  const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+
   useEffect(() => {
     const checkLogin = async () => {
       try {
@@ -39,7 +49,9 @@ export const GlobalContextProvider = ({
     checkLogin();
   }, []);
   return (
-    <GlobalContext.Provider value={{ categoryList, isLoggedIn, setIsLoggedIn }}>
+    <GlobalContext.Provider
+      value={{ categoryList, isLoggedIn, setIsLoggedIn, userInfo }}
+    >
       {children}
     </GlobalContext.Provider>
   );
