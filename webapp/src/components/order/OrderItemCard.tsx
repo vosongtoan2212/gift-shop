@@ -62,7 +62,7 @@ export default function OrderItemCard({ item }: OrderItemCardProps) {
           <div key={orderItem.id} className="flex justify-between py-3">
             <div className="flex items-center gap-4">
               <img
-                src={orderItem.product.imageUrl}
+                src={orderItem.product.imageUrl as string}
                 alt={orderItem.product.name}
                 className="w-12 h-12 object-cover rounded"
               />

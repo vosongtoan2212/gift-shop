@@ -9,13 +9,13 @@ import Link from "next/link";
 import PaginationCustom from "~/components/common/PaginationCustom";
 
 type Props = {
-  params: { keyword: string };
-  searchParams: { page: number; pageSize: number };
+  params: Promise<{ keyword: string }>;
+  searchParams: Promise<{ page: number; pageSize: number }>;
 };
 export default async function Search({ params, searchParams }: Props) {
   const { keyword } = await params;
   const decodedKeyword = decodeURIComponent(keyword);
-  
+
   const searchParamsValue = await searchParams;
   const page = searchParamsValue.page || 1;
   const pageSize = searchParamsValue.pageSize || 10;
@@ -27,7 +27,9 @@ export default async function Search({ params, searchParams }: Props) {
   return (
     <DefaultLayout>
       <div className="mb-4">
-        <h2 className="text-2xl font-bold mb-4">Kết quả tìm kiếm: {decodedKeyword}</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Kết quả tìm kiếm: {decodedKeyword}
+        </h2>
         {productOfCategory.data.length > 0 ? (
           <div>
             <ProductList products={productOfCategory.data} />

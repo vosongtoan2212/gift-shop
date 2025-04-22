@@ -15,7 +15,7 @@ import formatCurrency from "~/utils/format-currency";
 import ReviewSection from "~/components/product/ReviewSection";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export default async function ProductDetail({ params }: Props) {
@@ -26,15 +26,30 @@ export default async function ProductDetail({ params }: Props) {
   );
   const productData = product.data[0] as Product;
 
-  const { data: reviewList } = await fetchData(`${API_URL}/review/${productData.id}`);
+  let reviewList = [];
 
+  try {
+    const { res, data } = await fetchData(
+      `${API_URL}/review/${productData.id}`
+    );
+    if (res?.ok) {
+      reviewList = data;
+    }
+  } catch (error) {
+    console.error("Lỗi khi fetch đánh giá sản phẩm:", error);
+    reviewList = [];
+  }
   return (
     <DefaultLayout>
       <section className="py-8 bg-white md:py-16 antialiased">
         <div className="px-4 mx-auto 2xl:px-0">
           <div className="lg:grid lg:grid-cols-2 lg:gap-8 xl:gap-4">
             <div className="shrink-0 max-w-md lg:max-w-lg mx-auto">
-              <img className="w-full" src={productData.imageUrl} alt="" />
+              <img
+                className="w-full"
+                src={productData.imageUrl as string}
+                alt=""
+              />
             </div>
 
             <div className="mt-6 sm:mt-8 lg:mt-0">
@@ -110,7 +125,10 @@ export default async function ProductDetail({ params }: Props) {
             </div>
           </div>
         </div>
-        <ReviewSection reviewList={reviewList} productId={productData.id}></ReviewSection>
+        <ReviewSection
+          reviewList={reviewList}
+          productId={productData.id}
+        ></ReviewSection>
       </section>
     </DefaultLayout>
   );

@@ -1,7 +1,7 @@
 "use client";
 import React, { useLayoutEffect, useState } from "react";
 import { Button, Checkbox, Form, Input, Alert } from "antd";
-import { redirect, useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Title from "antd/es/typography/Title";
 import Link from "next/link";
 import { fetchData } from "~/utils/fetchData";
@@ -23,11 +23,9 @@ export default function Login() {
   const { isLoggedIn, setIsLoggedIn } = useGlobalContext();
 
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const preLoginUrl = searchParams.get("preLoginUrl") || "/";
 
   const onLoginSuccess = () => {
-    router.push(preLoginUrl);
+    router.push("/");
   };
 
   const [errorMessage, setErrorMessage] = useState({
@@ -91,7 +89,7 @@ export default function Login() {
 
   return (
     <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
-      <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+      <div className="w-full bg-white rounded-lg shadow md:mt-0 max-w-md xl:p-0">
         <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
           <Title level={3} className="text-center">
             Đăng nhập
@@ -153,7 +151,7 @@ export default function Login() {
             </Form.Item>
           </Form>
           <div className="flex justify-between text-primary">
-            <Link href="/register" className="hover:text-secondary">
+            <Link href="/dang-ky" className="hover:text-secondary">
               Đăng ký
             </Link>
             <Link href="/forgot-password" className="hover:text-secondary">

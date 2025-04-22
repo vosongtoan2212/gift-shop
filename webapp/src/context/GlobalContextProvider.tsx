@@ -4,17 +4,13 @@ import { API_URL } from "~/constants";
 import { Category } from "~/types/category";
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCookie } from "cookies-next";
+import { User } from "~/types/user";
 
 interface GlobalContextType {
   categoryList: Category[];
   isLoggedIn: boolean | null;
-  setIsLoggedIn: Function;
-  userInfo: {
-    email: string;
-    fullname: string;
-    profilePictureURL: string;
-    sub: number;
-  };
+  setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean | null>>;
+  userInfo: User;
 }
 
 // Tạo Context
@@ -22,16 +18,31 @@ export const GlobalContext = createContext<GlobalContextType | undefined>(
   undefined
 );
 
-const { data: categoryList } = await fetchData(`${API_URL}/category`);
-
 export const GlobalContextProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean | null>(null);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
   const userInfoString = getCookie("user") as string;
   const userInfo = userInfoString ? JSON.parse(userInfoString) : null;
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { res, data } = await fetchData(`${API_URL}/category`);
+        if (res?.ok) {
+          setCategoryList(data);
+        }
+      } catch (error) {
+        console.error(error);
+        setIsLoggedIn(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   useEffect(() => {
     const checkLogin = async () => {

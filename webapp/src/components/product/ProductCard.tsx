@@ -13,7 +13,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="w-full h-[250px] overflow-hidden rounded-t-lg bg-white flex items-center justify-center">
           <img
             className="w-full h-full object-cover"
-            src={product.imageUrl}
+            src={product.imageUrl as string}
             alt={product.name}
           />
         </div>

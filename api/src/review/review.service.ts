@@ -57,11 +57,6 @@ export class ReviewService {
   }
 
   async findByProductId(productId: number) {
-    const product = await this.reviewRepository.findOne({
-      where: { id: productId },
-    });
-    if (!product) throw new NotFoundException('Product not found');
-
     return this.reviewRepository
       .createQueryBuilder('review')
       .leftJoin('review.user', 'user')

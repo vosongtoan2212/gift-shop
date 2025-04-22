@@ -32,7 +32,6 @@ export class OrderService {
       (acc, item) => acc + item.price * item.quantity,
       0,
     );
-
     const order = this.orderRepo.create({
       user,
       totalAmount,

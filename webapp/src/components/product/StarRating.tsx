@@ -52,7 +52,7 @@ export default function StarRating({ averageRating }: StarRatingProps) {
       {[...Array(fullStars)].map((_, i) => fullStarSvg("text-yellow-300", i))}
       {hasHalfStar && halfStarSvg("text-yellow-300", remainingStar * 22)}
       {[...Array(emptyStars)].map((_, i) =>
-        fullStarSvg("text-gray-200 dark:text-gray-600", i)
+        fullStarSvg("text-gray-200", i)
       )}
     </div>
   );

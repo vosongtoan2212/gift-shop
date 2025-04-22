@@ -104,30 +104,33 @@ export default function ReviewSection({ reviewList, productId }: Props) {
       {!isLoggedIn && (
         <p className="text-sm text-gray-500">Bạn cần đăng nhập để đánh giá.</p>
       )}
-
-      <List
-        dataSource={reviews}
-        itemLayout="vertical"
-        renderItem={(item) => (
-          <List.Item key={item.id}>
-            <div className="flex justify-between items-center">
-              <div>
-                <Avatar src={item.user.profilePictureURL}>
-                  {item.user.fullname.charAt(0)}
-                </Avatar>
-                <span className="font-medium text-[#FA9BAB] ml-2">
-                  {item.user.fullname}
-                </span>
+      {reviews.length === 0 ? (
+        <p>Chưa có đánh giá nào.</p>
+      ) : (
+        <List
+          dataSource={reviews}
+          itemLayout="vertical"
+          renderItem={(item) => (
+            <List.Item key={item.id}>
+              <div className="flex justify-between items-center">
+                <div>
+                  <Avatar src={item.user.profilePictureURL}>
+                    {item.user.fullname.charAt(0)}
+                  </Avatar>
+                  <span className="font-medium text-[#FA9BAB] ml-2">
+                    {item.user.fullname}
+                  </span>
+                </div>
+                <Rate disabled value={item.rating} />
               </div>
-              <Rate disabled value={item.rating} />
-            </div>
-            <div className="mt-1 text-gray-600">{item.content}</div>
-            <div className="text-sm text-gray-400">
-              {new Date(item.createdAt).toLocaleString()}
-            </div>
-          </List.Item>
-        )}
-      />
+              <div className="mt-1 text-gray-600">{item.content}</div>
+              <div className="text-sm text-gray-400">
+                {new Date(item.createdAt).toLocaleString()}
+              </div>
+            </List.Item>
+          )}
+        />
+      )}
     </div>
   );
 }

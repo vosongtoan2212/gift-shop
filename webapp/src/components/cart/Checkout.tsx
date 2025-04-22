@@ -15,8 +15,7 @@ interface OrderFormValues {
 
 type CheckoutProps = {
   cartListInState: Cart[];
-  setCartListInState: Function;
-
+  setCartListInState: React.Dispatch<React.SetStateAction<Cart[]>>;
 }
 type NotificationType = "success" | "info" | "warning" | "error";
 

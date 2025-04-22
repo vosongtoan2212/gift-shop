@@ -1,12 +1,12 @@
+"use client"
 import Link from "next/link";
 import { Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { fetchData } from "~/utils/fetchData";
-import { API_URL } from "~/constants";
 import { Category } from "~/types/category";
+import { useGlobalContext } from "~/context/GlobalContextProvider";
 
-const { data: categoryList } = await fetchData(`${API_URL}/category`);
 const Footer = () => {
+  const { categoryList } = useGlobalContext();
   return (
     <footer className="bg-[#FFB0BD] text-white py-8 mt-16">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6 p-4 my-4">

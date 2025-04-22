@@ -27,7 +27,7 @@ async function refreshAccessToken(refreshToken: string) {
   return data;
 }
 
-export async function isLogin(): Promise<boolean> {
+export async function isLogin(): Promise<boolean | undefined> {
   const accessToken = await getCookie("accessToken", { cookies }); // Cookie access token
   const refreshToken = await getCookie("refreshToken", { cookies }); // Cookie refresh token
 
@@ -44,29 +44,34 @@ export async function isLogin(): Promise<boolean> {
 
     return true;
   }
+  if (!refreshToken) {
+    return false;
+  }
 
-  try {
-    const path = `${API_URL}/auth/check`;
-    const method = "POST";
-    const headers = {
-      "Content-Type": "application/json",
-    };
+  if (accessToken) {
+    try {
+      const path = `${API_URL}/auth/check`;
+      const method = "POST";
+      const headers = {
+        "Content-Type": "application/json",
+      };
 
-    const { res } = await fetchData(path, method, headers, "", accessToken);
-    if (res?.ok) {
-      return true; // Token còn hạn và hợp lệ
-    }
+      const { res } = await fetchData(path, method, headers, "", accessToken);
+      if (res?.ok) {
+        return true; // Token còn hạn và hợp lệ
+      }
 
-    if (!refreshToken) {
+      const newAccessToken = await refreshAccessToken(refreshToken as string);
+      await setCookie("accessToken", newAccessToken, { cookies });
+
+      return true; // Token đã được làm mới
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error(error.message);
+      } else {
+        console.error('Unknown error', error);
+      }
       return false;
     }
-
-    const newAccessToken = await refreshAccessToken(refreshToken as string);
-    await setCookie("accessToken", newAccessToken, { cookies });
-
-    return true; // Token đã được làm mới
-  } catch (error: any) {
-    console.error(error);
-    return false; // Token không hợp lệ hoặc lỗi khác
   }
 }

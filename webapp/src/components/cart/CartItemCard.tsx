@@ -24,7 +24,7 @@ export default function CartItemCard({
           <div className="shrink-0 md:order-1 mr-8">
             <img
               className="h-20 w-20 object-cover"
-              src={item.product.imageUrl}
+              src={item.product.imageUrl as string}
               alt={item.product.name}
             />
           </div>

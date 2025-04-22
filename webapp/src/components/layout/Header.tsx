@@ -57,10 +57,10 @@ const ActionMenu = () => {
   } else {
     return (
       <div className="flex gap-2">
-        <Link href="/register">
+        <Link href="/dang-ky">
           <Button type="link">Đăng ký</Button>
         </Link>
-        <Link href="/login">
+        <Link href="/dang-nhap">
           <Button type="primary" icon={<UserOutlined />}>
             Đăng nhập
           </Button>
@@ -130,7 +130,7 @@ const Header = () => {
           mode="horizontal"
           className="border-none"
           style={{ justifyContent: "flex-end" }}
-          items={categoryList.map((category: Category) => ({
+          items={categoryList?.map((category: Category) => ({
             key: category.id,
             label: (
               <Link href={`/danh-muc/${category.id}`}>{category.name}</Link>
@@ -150,7 +150,7 @@ const Header = () => {
           mode="vertical"
           className="border-none"
           style={{ justifyContent: "flex-end" }}
-          items={categoryList.map((category: Category) => ({
+          items={categoryList?.map((category: Category) => ({
             key: category.id,
             label: <Link href="#">{category.name}</Link>,
           }))}

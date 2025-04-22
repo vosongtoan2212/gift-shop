@@ -113,7 +113,7 @@ export default function Register() {
     <>
       {contextHolder}
       <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto h-screen lg:py-0">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
+        <div className="w-full bg-white rounded-lg shadow md:mt-0 max-w-md xl:p-0">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
             <Title level={3} className="text-center">
               Đăng ký
@@ -192,7 +192,7 @@ export default function Register() {
               </Form.Item>
             </Form>
             <div className="flex justify-between text-primary">
-              <Link href="/login" className="hover:text-secondary">
+              <Link href="/dang-nhap" className="hover:text-secondary">
                 Đăng nhập
               </Link>
               <Link href="/forgot-password" className="hover:text-secondary">

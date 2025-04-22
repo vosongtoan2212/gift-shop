@@ -8,8 +8,8 @@ import { fetchData } from "~/utils/fetchData";
 import Link from "next/link";
 import PaginationCustom from "~/components/common/PaginationCustom";
 type Props = {
-  params: { id: string };
-  searchParams: { page: number, pageSize: number };
+  params: Promise<{ id: string }>;
+  searchParams: Promise<{ page: number; pageSize: number }>;
 };
 export default async function Category({ params, searchParams }: Props) {
   const { id } = await params;

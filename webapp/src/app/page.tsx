@@ -8,7 +8,13 @@ import DefaultLayout from "~/components/layout/DefaultLayout";
 import Link from "next/link";
 
 export default async function Home() {
-  const { data: categoryList } = await fetchData(`${API_URL}/category`);
+  let categoryList = [];
+  try {
+    const { data } = await fetchData(`${API_URL}/category`);
+    categoryList = data ?? [];
+  } catch (error) {
+    console.error("Lỗi khi fetch danh mục:", error);
+  }
 
   // Lấy sản phẩm của mỗi danh mục
   const categoriesWithProducts = await Promise.all(
