@@ -9,11 +9,11 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { LayoutComponent } from '@components/layout/layout.component';
 import { API_BASE_URL } from 'src/app/core/configs/constants';
-import { ICategory } from 'src/app/core/configs/interface';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { EditCategoryDialogComponent } from 'src/app/pages/authorized/category/edit-category-dialog/edit-category-dialog.component';
-import { CategoryService } from '@services/category.service';
+import { EditProductDialogComponent } from 'src/app/pages/authorized/product/edit-product-dialog/edit-product-dialog.component';
+import { IProduct } from 'src/app/core/configs/interface';
+import { ProductService } from '@services/product.service';
 
 @Component({
   selector: 'app-category',
@@ -29,27 +29,37 @@ import { CategoryService } from '@services/category.service';
     MatIconModule,
     MatSnackBarModule,
   ],
-  templateUrl: './category.component.html',
+  templateUrl: './product.component.html',
   styles: ``,
 })
-export class CategoryComponent implements OnInit {
+export class ProductComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private categoryService: CategoryService,
+    private productService: ProductService,
   ) {}
 
-  displayedColumns: string[] = ['id', 'name', 'action'];
-  dataSource = new MatTableDataSource<ICategory>();
+  displayedColumns: string[] = [
+    'id',
+    'name',
+    'price',
+    'description',
+    'category',
+    'createdAt',
+    'imageUrl',
+    'stock',
+    'action',
+  ];
+  dataSource = new MatTableDataSource<IProduct>();
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   async ngOnInit(): Promise<void> {
-    this.categoryService.getCategories().subscribe({
+    this.productService.getProducts().subscribe({
       next: (res) => this.dataSource.data = res,
-      error: (err) => console.error('Lỗi khi lấy danh mục:', err)
+      error: (err) => console.error('Lỗi khi lấy sản phẩm:', err)
     });
   }
 
@@ -67,10 +77,10 @@ export class CategoryComponent implements OnInit {
     }
   }
 
-  onDeleteCategory(id: number): void {
-    if (!confirm('Bạn có chắc muốn xóa danh mục này không?')) return;
+  onDeleteProduct(id: number): void {
+    if (!confirm('Bạn có chắc muốn xóa sản phẩm này không?')) return;
 
-    this.http.delete(`${API_BASE_URL}/admin/category/${id}`).subscribe({
+    this.http.delete(`${API_BASE_URL}/admin/product/${id}`).subscribe({
       next: () => {
         this.snackBar.open('Đã xóa thành công!', 'Đóng', { duration: 3000 });
         // Cập nhật lại danh sách
@@ -83,15 +93,15 @@ export class CategoryComponent implements OnInit {
     });
   }
 
-  openEditDialog(category?: ICategory): void {
-    const dialogRef = this.dialog.open(EditCategoryDialogComponent, {
+  openEditDialog(product?: IProduct): void {
+    const dialogRef = this.dialog.open(EditProductDialogComponent, {
       width: '400px',
-      data: category || null,
+      data: product || null,
     });
 
-    dialogRef.afterClosed().subscribe((result: ICategory | undefined) => {
+    dialogRef.afterClosed().subscribe((result: IProduct | undefined) => {
       if (result) {
-        if (category) {
+        if (product) {
           // chỉnh sửa: cập nhật lại dòng trong bảng
           this.snackBar.open('Đã sửa thành công!', 'Đóng', { duration: 3000 });
           const index = this.dataSource.data.findIndex(c => c.id === result.id);

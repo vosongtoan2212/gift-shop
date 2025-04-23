@@ -11,6 +11,11 @@ import { RouterModule } from '@angular/router';
 export class NavigationComponent {
   navigationItems = [
     {
+      text: 'Sản phẩm',
+      icon: 'fa-brands fa-product-hunt',
+      to: '/product',
+    },
+    {
       text: 'Danh mục',
       icon: 'fa-solid fa-list',
       to: '/category',

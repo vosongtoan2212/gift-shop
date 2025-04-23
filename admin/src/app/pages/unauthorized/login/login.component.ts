@@ -41,7 +41,7 @@ export class LoginComponent {
           const token = res.accessToken;
           if (token) {
             this.authService.saveToken(token);
-            this.router.navigate(['/category']);
+            this.router.navigate(['/product']);
           }
         },
         error: (err: any) => {
