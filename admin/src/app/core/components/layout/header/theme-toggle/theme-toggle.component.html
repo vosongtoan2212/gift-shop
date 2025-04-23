@@ -1,0 +1,7 @@
+<span
+  (click)="toggleTheme()"
+  class="inline cursor-pointer items-center space-x-2 p-2 hover:bg-hoverColor rounded-full"
+>
+  <i *ngIf="!globalService.isDarkMode" class="fa-solid fa-sun"></i>
+  <i *ngIf="globalService.isDarkMode" class="fa-regular fa-moon"></i>
+</span>

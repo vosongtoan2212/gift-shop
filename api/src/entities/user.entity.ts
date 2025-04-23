@@ -8,6 +8,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
 } from 'typeorm';
+import { Role } from '~/common/enums/role.enum';
 import { CartEntity } from '~/entities/cart.entity';
 import { OrderEntity } from '~/entities/order.entity';
 import { ReviewEntity } from '~/entities/review.entity';
@@ -26,6 +27,13 @@ export class UserEntity {
 
   @Column({ length: 255 })
   fullname: string;
+
+  @Column({
+    type: 'enum',
+    enum: Role,
+    default: Role.User,
+  })
+  role: Role;
 
   @CreateDateColumn({
     name: 'created_at',

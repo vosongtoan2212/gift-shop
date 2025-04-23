@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Chỉnh sửa' : 'Thêm mới' }} danh mục</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="pt-2">
+    <mat-form-field class="w-full">
+      <mat-label>Tên danh mục</mat-label>
+      <input matInput formControlName="name" />
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+    {{ isEditMode ? 'Cập nhật' : 'Thêm' }}
+  </button>
+</mat-dialog-actions>

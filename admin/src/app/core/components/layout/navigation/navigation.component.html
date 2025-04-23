@@ -1,0 +1,11 @@
+<div class="w-full h-full border-r-2 border-borderColor border-solid">
+  <div *ngFor="let item of navigationItems">
+    <a
+      class="flex h-10 items-center px-6 text-lg hover:bg-hoverColor cursor-pointer"
+      [routerLink]="item.to"
+    >
+      <i class="{{ item.icon }} mr-2 text-textColor/50"></i>
+      <p>{{ item.text }}</p>
+    </a>
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<div class="flex flex-col justify-center items-center h-screen bg-backgroundColor">
+  <div class="w-[90%] max-w-xl p-5">
+    <h2 class="text-4xl text-center mb-10 text-textColor">Đăng nhập</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="w-full mb-4">
+        <input
+          formControlName="email"
+          type="email"
+          placeholder="Nhập email"
+          class="w-full py-3 px-4 bg-transparent text-textColor outline-primaryColor border-2 border-solid border-borderColor rounded-md"
+        />
+        <p
+          class="text-errorColor my-2"
+          *ngIf="loginForm.controls['email'].invalid && loginForm.controls['email'].touched"
+        >
+          Email không hợp lệ
+        </p>
+      </div>
+
+      <div class="w-full mb-4">
+        <input
+          formControlName="password"
+          type="password"
+          placeholder="Nhập mật khẩu"
+          class="w-full py-3 px-4 bg-transparent text-textColor outline-primaryColor border-2 border-solid border-borderColor rounded-md"
+        />
+        <p
+          class="text-errorColor my-2"
+          *ngIf="loginForm.controls['password'].invalid && loginForm.controls['password'].touched"
+        >
+          Mật khẩu không được bỏ trống
+        </p>
+      </div>
+
+      <div class="w-full mb-4">
+        <p class="text-errorColor my-2" *ngIf="errorMessage !== ''">{{ errorMessage }}</p>
+      </div>
+
+      <button
+        type="submit"
+        [disabled]="loginForm.invalid"
+        class="w-full btn-primary disabled:bg-slate-600 disabled:cursor-not-allowed"
+      >
+        Đăng nhập
+      </button>
+
+      <div class="flex justify-between my-2 text-textColor">
+      </div>
+    </form>
+  </div>
+</div>
