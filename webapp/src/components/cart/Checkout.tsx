@@ -47,7 +47,6 @@ export default function Checkout({cartListInState, setCartListInState}: Checkout
     });
   };
 
-  console.log("cartListInState", cartListInState)
   const onFinish = async (values: OrderFormValues) => {
     try {
       const accessToken = getCookie("accessToken");
