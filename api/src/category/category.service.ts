@@ -20,7 +20,11 @@ export class CategoryService {
 
   // Lấy tất cả danh mục
   async findAll(): Promise<CategoryEntity[]> {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({
+      order: {
+        id: 'ASC', // Sắp xếp tăng dần theo ID
+      },
+    });
   }
 
   // Lấy danh mục theo ID

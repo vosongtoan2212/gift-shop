@@ -1,0 +1,15 @@
+<app-header></app-header>
+<div class="flex h-[calc(100%-3rem)] relative">
+  <app-navigation
+    *ngIf="globalService.isOpenNav"
+    class="z-[999] w-full h-full sm:w-48 absolute sm:relative bg-backgroundColor"
+  ></app-navigation>
+  <div class="flex-1 flex flex-col lg:flex-row">
+    <ng-container *ngIf="content; else defaultContent">
+      {{ content }}
+    </ng-container>
+    <ng-template #defaultContent>
+      <ng-content></ng-content>
+    </ng-template>
+  </div>
+</div>

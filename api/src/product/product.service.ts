@@ -1,7 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import slugify from 'slugify';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
+import { BrandEntity } from '~/entities/brand.entity';
+import { CategoryEntity } from '~/entities/category.entity';
 import { ProductEntity } from '~/entities/product.entity';
 import { ReviewEntity } from '~/entities/review.entity';
 import { CreateProductDTO } from '~/product/dto/create-product.dto';
@@ -13,6 +15,10 @@ export class ProductService {
   constructor(
     @InjectRepository(ProductEntity)
     private productRepository: Repository<ProductEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
+    @InjectRepository(BrandEntity)
+    private brandRepository: Repository<BrandEntity>,
   ) {}
 
   async create(createProductDto: CreateProductDTO): Promise<ProductEntity> {
@@ -37,12 +43,27 @@ export class ProductService {
   }
 
   async findAll(): Promise<ProductEntity[]> {
-    return this.productRepository.find({ relations: ['category', 'brand'] });
+    return this.productRepository.find({
+      relations: ['category', 'brand'],
+      order: {
+        id: 'ASC', // Sắp xếp tăng dần theo ID
+      },
+    });
+  }
+
+  async findAllWithDeleted(): Promise<ProductEntity[]> {
+    return this.productRepository.find({
+      relations: ['category', 'brand'],
+      order: {
+        id: 'ASC', // Sắp xếp tăng dần theo ID
+      },
+      where: { deletedAt: IsNull() },
+    });
   }
 
   async findOne(id: number): Promise<ProductEntity> {
     const product = await this.productRepository.findOne({
-      where: { id },
+      where: { id, deletedAt: IsNull() },
       relations: ['category', 'brand'],
     });
     if (!product) {
@@ -67,15 +88,48 @@ export class ProductService {
     id: number,
     updateProductDto: UpdateProductDto,
   ): Promise<ProductEntity> {
-    const Product = await this.findOne(id); // Tìm sản phẩm để kiểm tra sự tồn tại
-    Object.assign(Product, updateProductDto); // Cập nhật thông tin sản phẩm
-    return this.productRepository.save(Product);
+    const product = await this.findOne(id); // Kiểm tra sản phẩm có tồn tại
+
+    // Kiểm tra và cập nhật category nếu có
+    if (updateProductDto.categoryId !== undefined) {
+      const category = await this.categoryRepository.findOneBy({
+        id: updateProductDto.categoryId,
+      });
+      if (!category) {
+        throw new NotFoundException(
+          `Danh mục với ID ${updateProductDto.categoryId} không tồn tại`,
+        );
+      }
+      product.category = category;
+    }
+
+    // Kiểm tra và cập nhật brand nếu có
+    if (updateProductDto.brandId !== undefined) {
+      const brand = await this.brandRepository.findOneBy({
+        id: updateProductDto.brandId,
+      });
+      if (!brand) {
+        throw new NotFoundException(
+          `Thương hiệu với ID ${updateProductDto.brandId} không tồn tại`,
+        );
+      }
+      product.brand = brand;
+    }
+
+    // Cập nhật các trường còn lại
+    Object.assign(product, updateProductDto);
+
+    return this.productRepository.save(product);
   }
 
   // Xóa sản phẩm
   async remove(id: number): Promise<void> {
-    const Product = await this.findOne(id); // Kiểm tra sự tồn tại của sản phẩm
-    await this.productRepository.remove(Product); // Xóa sản phẩm
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) {
+      throw new NotFoundException(`Sản phẩm với ID ${id} không tồn tại`);
+    }
+
+    await this.productRepository.softDelete(id);
   }
 
   async search(query: SearchProductDto) {
@@ -95,6 +149,7 @@ export class ProductService {
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.category', 'category')
       .leftJoinAndSelect('product.brand', 'brand')
+      .andWhere('product.deletedAt IS NULL')
       .leftJoin(
         (qb) =>
           qb

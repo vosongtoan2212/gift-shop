@@ -25,6 +25,7 @@ export class AuthService {
       email: user.email,
       sub: user.id,
       fullname: user.fullname,
+      role: user.role,
       profilePictureURL: user.profilePictureURL,
     };
     const payloadRefreshToken = {

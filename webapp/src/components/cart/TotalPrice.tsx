@@ -17,7 +17,8 @@ export default function TotalPrice({ cartList }: TotalPriceProps) {
 
   function calculateTotalPrice(cartItems: Cart[]): number {
     return cartItems.reduce((total, item) => {
-      return total + item.quantity * item.product.price;
+      const price = item.product?.price || 0;
+      return total + item.quantity * price;
     }, 0);
   }
 

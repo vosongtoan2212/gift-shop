@@ -1,0 +1,22 @@
+<h2 mat-dialog-title>Cập nhật trạng thái</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="pt-2">
+    <h3 class="mb-4">Đơn hàng #{{data?.id}}</h3>
+    <mat-form-field class="w-full">
+      <mat-label>Trạng thái</mat-label>
+      <mat-select formControlName="status">
+        <mat-option *ngFor="let status of statusList" [value]="status.value">
+          {{ status.text }}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Hủy</button>
+  <button mat-flat-button color="primary" (click)="onSave()" [disabled]="form.invalid">
+    Cập nhật
+  </button>
+</mat-dialog-actions>

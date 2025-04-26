@@ -12,7 +12,7 @@ import { JwtAuthGuard } from '~/guard/jwt.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('order')
-export class OrderController {
+export class UserOrderController {
   constructor(private readonly orderService: OrderService) {}
 
   @Post('create')
@@ -22,6 +22,6 @@ export class OrderController {
 
   @Get()
   findAll(@Request() req) {
-    return this.orderService.getAllOrders(req);
+    return this.orderService.getAllOrdersForUser(req);
   }
 }

@@ -1,0 +1,32 @@
+<div
+  class="bg-backgroundColor flex items-center justify-between h-12 px-4 border-b-2 border-borderColor border-solid"
+>
+  <button
+    class="flex flex-col items-center justify-center w-6 h-6 focus:outline-none"
+    (click)="toggleNavigation()"
+  >
+    <span
+      class="block w-6 h-[2px] bg-textColor transition-all duration-300 transform"
+      [ngClass]="{
+        'rotate-45 translate-y-1.5': globalService.isOpenNav,
+      }"
+    ></span>
+    <span
+      class="block w-6 h-[2px] bg-textColor transition-all duration-300 transform mt-1"
+      [ngClass]="{
+        'opacity-0': globalService.isOpenNav,
+      }"
+    ></span>
+    <span
+      class="block w-6 h-[2px] bg-textColor transition-all duration-300 transform mt-1"
+      [ngClass]="{
+        '-rotate-45 -translate-y-1.5': globalService.isOpenNav,
+      }"
+    ></span>
+  </button>
+
+  <div>
+    <app-theme-toggle class="mr-2"></app-theme-toggle>
+    <button (click)="logout()">Đăng xuất</button>
+  </div>
+</div>

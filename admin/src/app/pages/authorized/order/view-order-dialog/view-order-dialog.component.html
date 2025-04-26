@@ -1,0 +1,29 @@
+<h2 mat-dialog-title>Chi tiết đơn hàng</h2>
+
+<mat-dialog-content class="max-h-[70vh] overflow-auto">
+  <h3 class="mb-4 font-semibold text-lg">Đơn hàng #{{ data?.id }}</h3>
+
+  <div class="space-y-4">
+    <div *ngFor="let item of data?.orderItems" class="flex items-start gap-4 border-b pb-4">
+      <img
+        [src]="item?.product?.imageUrl || 'https://placehold.co/40'"
+        alt="Ảnh sản phẩm"
+        class="w-16 h-16 object-cover rounded"
+      />
+      <div class="flex-1">
+        <div class="font-medium text-base">
+          {{ item?.product?.name || 'Sản phẩm đã bị xóa' }}
+        </div>
+        <div class="text-sm text-gray-600">Số lượng: {{ item?.quantity }}</div>
+        <div class="text-sm text-gray-600">Đơn giá: {{ item?.price | number }}đ</div>
+        <div *ngIf="item?.product?.description" class="text-xs text-gray-500 mt-1">
+          {{ item?.product?.description }}
+        </div>
+      </div>
+    </div>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="mt-4">
+  <button mat-button (click)="onCancel()">Đóng</button>
+</mat-dialog-actions>

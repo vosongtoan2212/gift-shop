@@ -8,6 +8,7 @@ import {
   OneToMany,
   Index,
   JoinColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 import { BrandEntity } from '~/entities/brand.entity';
 import { CartEntity } from '~/entities/cart.entity';
@@ -63,4 +64,7 @@ export class ProductEntity {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }

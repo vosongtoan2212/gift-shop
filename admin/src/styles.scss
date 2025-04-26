@@ -1,0 +1,44 @@
+/* You can add global styles to this file, and also import other style files */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+.light {
+  --background-color: 245, 245, 245;
+  --text-color: 34, 34, 34;
+  --border-color: 200, 200, 200;
+  --hover-color: 200, 200, 200;
+  --primary-color: 33, 150, 243;
+  --secondary-color: 156, 39, 176;
+  --accent-color: 255, 193, 7;
+  --error-color: 240, 56, 43;
+}
+
+.dark {
+  --background-color: 29, 35, 39;
+  --text-color: 255, 255, 255;
+  --border-color: 80, 87, 94;
+  --hover-color: 80, 87, 94;
+  --primary-color: 51, 97, 204;
+  --secondary-color: 123, 31, 162;
+  --accent-color: 255, 152, 0;
+  --error-color: 240, 56, 43;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primaryColor/90 py-2 px-4 text-white rounded-md hover:bg-primaryColor cursor-pointer
+  }
+}
