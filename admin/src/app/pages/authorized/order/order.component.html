@@ -1,0 +1,108 @@
+<app-main-layout>
+  <div class="block md:flex w-full">
+    <div class="w-full">
+      <mat-form-field class="w-full">
+        <mat-label>Tìm kiếm</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Ví dụ: Giỏ quà" #input />
+      </mat-form-field>
+
+      <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8 w-full">
+        <!-- ID Column -->
+        <ng-container matColumnDef="id">
+          <th class="w-[30px]" mat-header-cell *matHeaderCellDef mat-sort-header>No.</th>
+          <td mat-cell *matCellDef="let order">{{ order.id }}</td>
+        </ng-container>
+
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th class="min-w-[200px]" mat-header-cell *matHeaderCellDef mat-sort-header>Họ tên</th>
+          <td mat-cell *matCellDef="let order">{{ order.fullName }}</td>
+        </ng-container>
+
+        <!-- Phone Column -->
+        <ng-container matColumnDef="phone">
+          <th class="w-[140px]" mat-header-cell *matHeaderCellDef mat-sort-header>Số điện thoại</th>
+          <td mat-cell *matCellDef="let order">{{ order.phone }}</td>
+        </ng-container>
+
+        <!-- Address Column -->
+        <ng-container matColumnDef="address">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Địa chỉ</th>
+          <td mat-cell *matCellDef="let order">{{ order.address }}</td>
+        </ng-container>
+
+        <!-- Note Column -->
+        <ng-container matColumnDef="note">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ghi chú</th>
+          <td mat-cell *matCellDef="let order">{{ order.note }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th class="w-[160px]" mat-header-cell *matHeaderCellDef mat-sort-header>Trạng thái</th>
+          <td mat-cell *matCellDef="let order">
+            <span
+              [ngClass]="getStatus(order.status).style"
+              class="px-2 py-1 rounded text-sm font-medium"
+            >
+              {{ getStatus(order.status).text }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Tổng giá</th>
+          <td mat-cell *matCellDef="let order">
+            {{ order.totalAmount | currency: 'VND' : 'symbol' : '1.0-0' : 'vi' }}
+          </td>
+        </ng-container>
+
+        <!-- Accion Column -->
+        <ng-container matColumnDef="action">
+          <th class="w-[120px]" mat-header-cell *matHeaderCellDef style="text-align: center">
+            Hành động
+          </th>
+          <td mat-cell *matCellDef="let order">
+            <div class="flex justify-center gap-2">
+              <!-- Nút xem -->
+              <button
+                mat-icon-button
+                color="secondary"
+                (click)="$event.stopPropagation(); openViewDialog(order)"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+              <!-- Nút sửa -->
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="$event.stopPropagation(); openEditDialog(order)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns"
+          (click)="openViewDialog(row)"
+          class="cursor-pointer hover:bg-slate-300"
+        ></tr>
+      </table>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">No data matching the filter "{{ input.value }}"</td>
+      </tr>
+
+      <mat-paginator
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page of users"
+      ></mat-paginator>
+    </div>
+  </div>
+</app-main-layout>

@@ -7,6 +7,8 @@ import { OrderEntity } from '~/entities/order.entity';
 import { ProductEntity } from '~/entities/product.entity';
 import { UserEntity } from '~/entities/user.entity';
 import { CreateOrderDto } from '~/order/dto/create-order';
+import { OrderStatus } from '~/common/enums/order.enum';
+import { UpdateOrderStatusDto } from '~/order/dto/update-order';
 
 @Injectable()
 export class OrderService {
@@ -35,7 +37,7 @@ export class OrderService {
     const order = this.orderRepo.create({
       user,
       totalAmount,
-      status: 'pending',
+      status: OrderStatus.PENDING,
       fullName: dto.fullName,
       email: dto.email,
       phone: dto.phone,
@@ -64,9 +66,33 @@ export class OrderService {
     return instanceToPlain(fullOrder);
   }
 
-  async getAllOrders(payloadToken) {
+  async updateOrder(id: number, dto: UpdateOrderStatusDto) {
+    const order = await this.orderRepo.findOne({ where: { id } });
+  
+    if (!order) {
+      throw new Error('Order not found');
+    }
+  
+    order.status = dto.status;
+    await this.orderRepo.save(order);
+
+    const fullOrder = await this.orderRepo.findOne({
+      where: { id },
+      relations: ['user', 'orderItems', 'orderItems.product'],
+    });
+    return instanceToPlain(fullOrder);
+  }
+
+  async getAllOrdersForUser(payloadToken) {
     const orders = await this.orderRepo.find({
       where: { user: { id: payloadToken.user.sub } },
+      relations: ['user', 'orderItems', 'orderItems.product'],
+      order: { createdAt: 'DESC' },
+    });
+    return instanceToPlain(orders);
+  }
+  async getAllOrdersForAdmin() {
+    const orders = await this.orderRepo.find({
       relations: ['user', 'orderItems', 'orderItems.product'],
       order: { createdAt: 'DESC' },
     });

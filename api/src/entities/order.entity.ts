@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '~/entities/user.entity';
 import { OrderItemEntity } from '~/entities/order-item.entity';
+import { OrderStatus } from '~/common/enums/order.enum';
 
 @Entity('orders')
 export class OrderEntity {
@@ -20,8 +21,12 @@ export class OrderEntity {
   @Column()
   totalAmount: number;
 
-  @Column({ default: 'pending' }) // Các trạng thái: pending, processing, completed, cancelled
-  status: string;
+  @Column({
+    type: 'enum',
+    enum: OrderStatus,
+    default: OrderStatus.PENDING,
+  })
+  status: OrderStatus;
 
   @Column()
   fullName: string;

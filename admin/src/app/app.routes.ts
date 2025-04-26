@@ -4,6 +4,7 @@ import { AuthGuard } from './core/guards/auth.guard';
 import { NotAuthGuard } from './core/guards/notAuth.guard';
 import { CategoryComponent } from 'src/app/pages/authorized/category/category.component';
 import { ProductComponent } from 'src/app/pages/authorized/product/product.component';
+import { OrderComponent } from 'src/app/pages/authorized/order/order.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'product', pathMatch: 'full' },
@@ -16,6 +17,11 @@ export const routes: Routes = [
   {
     path: 'category',
     component: CategoryComponent,
+    canActivate: [AuthGuard], // Bảo vệ route
+  },
+  {
+    path: 'order',
+    component: OrderComponent,
     canActivate: [AuthGuard], // Bảo vệ route
   },
   { path: '**', redirectTo: 'product' },

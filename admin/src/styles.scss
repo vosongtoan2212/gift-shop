@@ -38,10 +38,6 @@ body {
 }
 
 @layer components {
-  .iconCustom {
-    @apply cursor-pointer items-center p-2 hover:bg-hoverColor rounded-full
-  }
-
   .btn-primary {
     @apply bg-primaryColor/90 py-2 px-4 text-white rounded-md hover:bg-primaryColor cursor-pointer
   }
