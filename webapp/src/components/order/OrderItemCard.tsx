@@ -6,13 +6,13 @@ type OrderItemCardProps = {
 };
 
 export default function OrderItemCard({ item }: OrderItemCardProps) {
-  // const status = item.status === "pending" ? "Đang xử lý" : item.status === "completed" ? "Hoàn thành" : "Đã hủy";
-
   let status: { text: string; style: string };
   if (item.status === "pending") {
     status = { text: "Đang chờ xử lý", style: "bg-yellow-100 text-yellow-800" };
   } else if (item.status === "processing") {
-    status = { text: "Đang xử lý", style: "bg-yellow-200 text-yellow-800" };
+    status = { text: "Đang xử lý", style: "bg-yellow-300 text-yellow-800" };
+  } else if (item.status === "shipping") {
+    status = { text: "Đang vận chuyển", style: "bg-blue-100 text-blue-800" };
   } else if (item.status === "completed") {
     status = { text: "Hoàn thành", style: "bg-green-100 text-green-800" };
   } else if (item.status === "cancelled") {
@@ -25,9 +25,7 @@ export default function OrderItemCard({ item }: OrderItemCardProps) {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Đơn hàng #{item.id}</h2>
-        <span
-          className={`px-3 py-1 text-sm rounded-full ${status.style}`}
-        >
+        <span className={`px-3 py-1 text-sm rounded-full ${status.style}`}>
           {status.text}
         </span>
       </div>
@@ -58,16 +56,20 @@ export default function OrderItemCard({ item }: OrderItemCardProps) {
 
       {/* Product List */}
       <div className="divide-y divide-gray-200">
-        {item.orderItems.map((orderItem) => (
-          <div key={orderItem.id} className="flex justify-between py-3">
+        {item.orderItems.map((orderItem, key) => (
+          <div key={key} className="flex justify-between py-3">
             <div className="flex items-center gap-4">
               <img
-                src={orderItem.product.imageUrl as string}
-                alt={orderItem.product.name}
+                src={orderItem.product?.imageUrl as string}
+                alt={orderItem.product?.name}
                 className="w-12 h-12 object-cover rounded"
               />
               <div>
-                <p className="font-medium">{orderItem.product.name}</p>
+                {orderItem.product?.name ? (
+                  <p className="font-medium">{orderItem.product?.name}</p>
+                ) : (
+                  <p className="font-medium text-red-500 italic">Sản phẩm đã bị xóa</p>
+                )}
                 <p className="text-sm text-gray-500">x{orderItem.quantity}</p>
               </div>
             </div>
