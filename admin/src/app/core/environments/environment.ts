@@ -1,4 +1,4 @@
 export const environment = {
-  production: false,
-  apiUrl: 'http://localhost:3001', // Đặt URL API
+  production: true,
+  apiUrl: 'https://gift-shop-api-dun.vercel.app', // Đặt URL API
 };
