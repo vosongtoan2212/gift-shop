@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
+import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
 import { GlobalContextProvider } from "~/context/GlobalContextProvider";
 import ProgressBar from "~/components/common/ProgressBar";
@@ -47,6 +48,7 @@ export default function RootLayout({
             <GlobalContextProvider>{children}</GlobalContextProvider>
           </ConfigProvider>
         </AntdRegistry>
+        <Analytics />
       </body>
     </html>
   );
