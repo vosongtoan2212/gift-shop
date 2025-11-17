@@ -18,9 +18,23 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Exclude()
   password: string;
+
+  @Column({ name: 'google_id', nullable: true, unique: true })
+  googleId?: string;
+
+  @Column({ name: 'facebook_id', nullable: true, unique: true })
+  facebookId?: string;
+
+  @Column({
+    name: 'auth_provider',
+    type: 'enum',
+    enum: ['local', 'google', 'facebook'],
+    default: 'local',
+  })
+  authProvider: string;
 
   @Column({ unique: true })
   email: string;

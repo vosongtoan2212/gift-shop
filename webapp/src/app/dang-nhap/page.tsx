@@ -8,6 +8,7 @@ import { fetchData } from "~/utils/fetchData";
 import { API_URL } from "~/constants";
 import { setCookie } from "cookies-next";
 import { useGlobalContext } from "~/context/GlobalContextProvider";
+import SocialLoginButtons from '~/components/SocialLoginButtons';
 
 type FieldType = {
   email?: string;
@@ -158,6 +159,8 @@ export default function Login() {
               Quên mật khẩu
             </Link>
           </div>
+
+          <SocialLoginButtons />
         </div>
       </div>
     </div>

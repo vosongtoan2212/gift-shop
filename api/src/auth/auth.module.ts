@@ -4,6 +4,10 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from '~/user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GoogleStrategy } from '~/auth/strategies/google.strategy';
+import { PassportModule } from '@nestjs/passport';
+import { UserEntity } from '~/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -16,8 +20,11 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
     UserModule,
+    PassportModule,
+    TypeOrmModule.forFeature([UserEntity]),
   ],
-  providers: [AuthService],
+  providers: [AuthService, GoogleStrategy],
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}

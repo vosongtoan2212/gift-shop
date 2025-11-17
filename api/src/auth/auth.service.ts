@@ -5,14 +5,19 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
+import { Repository } from 'typeorm';
 import { UserService } from '~/user/user.service';
 import { LoginDTO, RegisterDTO } from './dto/auth.dto';
+import { UserEntity } from '~/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
     private userService: UserService,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async login({ email, password }: LoginDTO) {
@@ -43,6 +48,75 @@ export class AuthService {
     await this.userService.updateRefreshToken(user.id, refreshToken);
 
     return { accessToken, refreshToken, user: payloadAccessToken };
+  }
+
+  async validateOAuthLogin(
+    profile: any,
+  ): Promise<{ accessToken: string; refreshToken: string; user: UserEntity }> {
+    let user: UserEntity;
+
+    // Tìm user theo Google ID hoặc Facebook ID
+    if (profile.googleId) {
+      user = await this.userRepository.findOne({
+        where: { googleId: profile.googleId },
+      });
+    } else if (profile.facebookId) {
+      user = await this.userRepository.findOne({
+        where: { facebookId: profile.facebookId },
+      });
+    }
+
+    // Nếu chưa có user, tìm theo email
+    if (!user && profile.email) {
+      user = await this.userRepository.findOne({
+        where: { email: profile.email },
+      });
+
+      // Nếu tìm thấy user với email, cập nhật thông tin OAuth
+      if (user) {
+        if (profile.googleId) user.googleId = profile.googleId;
+        if (profile.facebookId) user.facebookId = profile.facebookId;
+        user.authProvider = profile.authProvider;
+        if (profile.profilePictureURL && !user.profilePictureURL) {
+          user.profilePictureURL = profile.profilePictureURL;
+        }
+        await this.userRepository.save(user);
+      }
+    }
+
+    // Nếu vẫn chưa có user, tạo mới
+    if (!user) {
+      user = this.userRepository.create({
+        email: profile.email,
+        fullname: profile.fullname,
+        googleId: profile.googleId,
+        facebookId: profile.facebookId,
+        profilePictureURL: profile.profilePictureURL,
+        authProvider: profile.authProvider,
+        password: null, // OAuth không cần password
+      });
+      await this.userRepository.save(user);
+    }
+
+    // Cập nhật last login
+    user.lastLoginDate = new Date();
+
+    // Tạo tokens
+    const payload = {
+      email: user.email,
+      sub: user.id,
+      fullname: user.fullname,
+      role: user.role,
+      profilePictureURL: user.profilePictureURL,
+    };
+    const accessToken = this.jwtService.sign(payload, { expiresIn: '15m' });
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' });
+
+    // Lưu refresh token
+    user.refreshToken = await bcrypt.hash(refreshToken, 10);
+    await this.userRepository.save(user);
+
+    return { accessToken, refreshToken, user };
   }
 
   async register(registerDto: RegisterDTO) {
