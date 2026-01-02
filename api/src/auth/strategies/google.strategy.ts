@@ -6,7 +6,6 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
   constructor(private readonly configService: ConfigService) {
-     console.log('GOOGLE_CLIENT_ID =', configService.get('GOOGLE_CLIENT_ID'));
     super({
       clientID: configService.get('GOOGLE_CLIENT_ID'),
       clientSecret: configService.get('GOOGLE_CLIENT_SECRET'),
@@ -21,12 +20,12 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: Profile,
     done: VerifyCallback,
   ): Promise<any> {
-
     const { id, name, emails, photos } = profile;
 
     // Kiểm tra và lấy dữ liệu an toàn
     const email = emails && emails.length > 0 ? emails[0].value : null;
-    const profilePictureURL = photos && photos.length > 0 ? photos[0].value : null;
+    const profilePictureURL =
+      photos && photos.length > 0 ? photos[0].value : null;
     const firstName = name?.givenName || '';
     const lastName = name?.familyName || '';
 

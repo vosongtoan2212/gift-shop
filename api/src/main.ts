@@ -3,7 +3,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 
 const corsOptions = {
-  origin: '*',
+  origin: ['http://localhost:3000', 'http://localhost:4200'], // frontend
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };

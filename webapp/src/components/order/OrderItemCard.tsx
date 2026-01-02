@@ -1,11 +1,15 @@
+import Link from "next/link";
 import { Order } from "~/types/order";
+import { Button } from "antd";
 import formatCurrency from "~/utils/format-currency";
+// import PaymentMethodSelector from "../payment/PaymentMethodSelector";
 
 type OrderItemCardProps = {
   item: Order;
+  isCheckout?: boolean;
 };
 
-export default function OrderItemCard({ item }: OrderItemCardProps) {
+export default function OrderItemCard({ item, isCheckout = false }: OrderItemCardProps) {
   let status: { text: string; style: string };
   if (item.status === "pending") {
     status = { text: "Đang chờ xử lý", style: "bg-yellow-100 text-yellow-800" };
@@ -25,9 +29,20 @@ export default function OrderItemCard({ item }: OrderItemCardProps) {
       {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-semibold">Đơn hàng #{item.id}</h2>
-        <span className={`px-3 py-1 text-sm rounded-full ${status.style}`}>
-          {status.text}
-        </span>
+        <div>
+          <div className={`px-3 py-1 mb-4 text-sm rounded-full ${status.style}`}>
+            {status.text}
+          </div>
+          {item.status === "pending" && !isCheckout &&
+            <Link href={`/thanh-toan/${item.id}`}>
+              <Button type="primary">Thanh toán</Button>
+            </Link>
+
+          }{item.status !== "pending" && !isCheckout &&
+            <div>Đã thanh toán</div>
+
+          }
+        </div>
       </div>
 
       {/* Order Info */}

@@ -33,8 +33,11 @@ export class ProductEntity {
   @Column()
   price: number;
 
-  @Column({ default: 0 })
+  @Column({ type: 'int', default: 0 })
   stock: number;
+
+  @Column({ type: 'int', default: 0 })
+  sold: number;
 
   @Column({ nullable: true })
   imageUrl: string;

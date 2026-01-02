@@ -1,5 +1,7 @@
+"use client"
 import { Button, Form, Input, notification } from "antd";
 import { getCookie } from "cookies-next";
+import { useRouter } from 'next/navigation';
 import { API_URL } from "~/constants";
 import { useGlobalContext } from "~/context/GlobalContextProvider";
 import { Cart } from "~/types/cart";
@@ -32,8 +34,9 @@ const validateMessages = {
   },
 };
 
-export default function Checkout({cartListInState, setCartListInState}: CheckoutProps) {
+export default function Checkout({ cartListInState, setCartListInState }: CheckoutProps) {
   const { userInfo } = useGlobalContext();
+  const router = useRouter();
   const [api, contextHolder] = notification.useNotification();
 
   const openNotificationWithIcon = (
@@ -73,9 +76,7 @@ export default function Checkout({cartListInState, setCartListInState}: Checkout
         orderItems,
       });
 
-      console.log(JSON.parse(bodyOrder));
-
-      const { res } = await fetchData(
+      const { res, data } = await fetchData(
         `${API_URL}/order/create`,
         "POST",
         { "Content-Type": "application/json" },
@@ -85,6 +86,8 @@ export default function Checkout({cartListInState, setCartListInState}: Checkout
 
       if (res?.ok) {
         openNotificationWithIcon("success", "Đặt hàng thành công");
+        console.log(data)
+        router.push(`/don-hang/${data.id}`);
         cartList.map((item: any) => {
           fetchData(
             `${API_URL}/cart/${item.id}`,

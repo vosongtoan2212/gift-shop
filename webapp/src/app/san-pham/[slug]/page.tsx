@@ -117,9 +117,9 @@ export default async function ProductDetail({ params }: Props) {
                   style={{ color: "#FA9BAB" }}
                 />
                 <p className="font-bold">
-                  Hỗ trợ ship 20k cho đơn hàng từ 300k nội thành HN, HCM Hỗ trợ
+                  Hỗ trợ ship 20k cho đơn hàng từ 300k nội thành HN, HCM
                   <br></br>
-                  ship 30k cho đơn hàng từ 500k các khu vực khác
+                  Hỗ trợ ship 30k cho đơn hàng từ 500k các khu vực khác
                 </p>
               </div>
             </div>

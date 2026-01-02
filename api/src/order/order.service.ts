@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { instanceToPlain } from 'class-transformer';
@@ -68,11 +68,11 @@ export class OrderService {
 
   async updateOrder(id: number, dto: UpdateOrderStatusDto) {
     const order = await this.orderRepo.findOne({ where: { id } });
-  
+
     if (!order) {
       throw new Error('Order not found');
     }
-  
+
     order.status = dto.status;
     await this.orderRepo.save(order);
 
@@ -97,5 +97,21 @@ export class OrderService {
       order: { createdAt: 'DESC' },
     });
     return instanceToPlain(orders);
+  }
+
+  async getOrderByIdForUser(orderId: number, payloadToken) {
+    const order = await this.orderRepo.findOne({
+      where: {
+        id: orderId,
+        user: { id: payloadToken.user.sub },
+      },
+      relations: ['user', 'orderItems', 'orderItems.product'],
+    });
+
+    if (!order) {
+      throw new NotFoundException('Order not found');
+    }
+
+    return instanceToPlain(order);
   }
 }
